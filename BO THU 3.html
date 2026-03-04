@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Mã Bộ Thủ 3 - Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --nature-green: #2ecc71;
+            --ocean-blue: #3498db;
+            --leaf-dark: #27ae60;
+            --primary-pink: #ff85a1;
+            --dark-text: #2c3e50;
+            --light-bg: #f0fff4;
+            --success: #00b894;
+            --wrong: #ff7675;
+        }
+
+        * { box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #e6fffa 0%, #e0f2fe 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 6px solid var(--nature-green);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            padding: 30px;
+            animation: fadeIn 0.4s ease-out;
+            flex-grow: 1;
+        }
+
+        .active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Welcome Screen */
+        #welcome-screen { text-align: center; justify-content: center; }
+        .logo { font-size: 80px; margin-bottom: 10px; }
+        .main-title { font-family: 'Comfortaa', cursive; color: var(--leaf-dark); font-size: 32px; margin: 0; }
+        .sub-title { color: var(--ocean-blue); font-size: 18px; font-weight: 700; margin-bottom: 30px; }
+        
+        .btn-play {
+            padding: 18px 50px;
+            font-size: 20px;
+            background: var(--nature-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #219150;
+            transition: 0.2s;
+            font-weight: 800;
+        }
+        .btn-play:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #219150; }
+        .btn-play:active { transform: translateY(3px); box-shadow: 0 3px 0 #219150; }
+
+        /* Header & Progress */
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .progress-bar-bg { flex-grow: 1; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--nature-green), var(--ocean-blue)); transition: 0.4s; }
+        .badge { background: var(--nature-green); color: white; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 12px; }
+
+        /* Question Area */
+        .question-box { font-size: 22px; font-weight: 700; color: var(--dark-text); margin-bottom: 25px; line-height: 1.4; }
+        .game-layout { display: grid; grid-template-columns: 1fr 240px; gap: 20px; }
+        
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .opt-btn {
+            background: #fff;
+            border: 2px solid #edf2f7;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--nature-green); background: #f0fff4; }
+        .opt-btn.correct { background: var(--success) !important; color: white; border-color: #009473; transform: scale(1.02); }
+        .opt-btn.wrong { background: var(--wrong) !important; color: white; border-color: #d63031; }
+
+        .visual-hint {
+            background: #f1f5f9;
+            border-radius: 24px;
+            border: 4px solid var(--ocean-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            height: 240px;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .visual-hint span { font-size: 15px; font-weight: 700; color: var(--ocean-blue); margin-top: 15px; letter-spacing: 1px; }
+
+        /* Explanation Section */
+        .explanation-box {
+            margin-top: 20px;
+            background: #e0f2fe;
+            border-radius: 20px;
+            padding: 18px;
+            border-left: 6px solid var(--ocean-blue);
+            display: none;
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .explanation-box h4 { margin: 0 0 8px 0; color: var(--ocean-blue); font-size: 18px; }
+        .explanation-box p { margin: 0; font-size: 16px; color: #334155; line-height: 1.5; }
+
+        /* Control Footer */
+        .footer { margin-top: auto; padding-top: 25px; display: flex; justify-content: flex-end; }
+        .btn-next {
+            background: var(--ocean-blue);
+            color: white;
+            padding: 14px 35px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2980b9;
+            display: none;
+            font-size: 16px;
+        }
+        .btn-next:hover { background: #5dade2; }
+
+        /* Final Result */
+        #result-screen { text-align: center; align-items: center; justify-content: center; }
+        .score-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 30px;
+            border: 4px solid var(--nature-green);
+            margin-bottom: 25px;
+        }
+        .score-card b { font-size: 60px; color: var(--nature-green); display: block; }
+
+        @media (max-width: 700px) {
+            .game-layout { grid-template-columns: 1fr; }
+            .visual-hint { height: 140px; font-size: 60px; order: -1; }
+        }
+    </style>
+</head>
+<body>
+
+<audio id="s-correct" src="https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3"></audio>
+<audio id="s-wrong" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
+<audio id="s-pop" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+
+<div class="game-wrapper">
+    <!-- START SCREEN -->
+    <div id="welcome-screen" class="screen active">
+        <div class="logo">🌿</div>
+        <h1 class="main-title">THỬ THÁCH BỘ THỦ 3</h1>
+        <div class="sub-title">THIÊN NHIÊN • THỰC VẬT • MÔI TRƯỜNG</div>
+        <button class="btn-play" onclick="startGame()">KHÁM PHÁ NGAY 🎋</button>
+        <p style="margin-top: 25px; color: #4a5568; font-size: 15px;">Học tiếng Trung qua hình ảnh cùng <b>Nga Học HSK</b></p>
+    </div>
+
+    <!-- PLAY SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="header">
+            <div class="badge">Nga Học HSK</div>
+            <div class="progress-bar-bg"><div id="progress-fill" class="progress-fill"></div></div>
+            <div style="font-weight:800; min-width:70px;">Câu: <span id="q-idx">1</span>/20</div>
+        </div>
+
+        <div id="q-text" class="question-box">Vui lòng chờ...</div>
+
+        <div class="game-layout">
+            <div id="options" class="options-list"></div>
+            <div class="visual-hint">
+                <div id="v-icon">🌱</div>
+                <span id="v-label">THIÊN NHIÊN</span>
+            </div>
+        </div>
+
+        <div id="expl-box" class="explanation-box">
+            <h4><i class="fa-solid fa-seedling"></i> Giải mã từ Cô Nga:</h4>
+            <p id="expl-text"></p>
+        </div>
+
+        <div class="footer">
+            <button id="next-btn" class="btn-next" onclick="nextQuestion()">CÂU TIẾP THEO <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <!-- FINAL SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="font-size:90px">🏆</div>
+        <h2 style="color:var(--leaf-dark); margin: 10px 0;">CHÚC MỪNG BẠN!</h2>
+        <div class="score-card">
+            <span style="font-size:16px; font-weight:700; color:#64748b">TỔNG ĐIỂM</span>
+            <b id="final-score">0</b>
+        </div>
+        <p id="final-msg" style="font-weight:600; color:#475569; margin-bottom: 30px; font-size: 18px;"></p>
+        <button class="btn-play" onclick="location.reload()">CHINH PHỤC LẠI</button>
+    </div>
+</div>
+
+<script>
+    const natureQuiz = [
+        {
+            q: "Chữ '花' (huā - hoa) có bộ Thảo (艹) ở phía trên. Bộ này tượng trưng cho?",
+            options: ["Cỏ, thực vật thân mềm", "Cái cây thân gỗ", "Nước chảy", "Mái nhà"],
+            a: "Cỏ, thực vật thân mềm",
+            expl: "Bộ Thảo (艹) vẽ hình hai mầm cỏ nhú lên, liên quan đến các loại hoa, cỏ và thực vật nhỏ.",
+            icon: "🌸"
+        },
+        {
+            q: "Trong chữ '树' (shù - cây), bộ Mộc (木) đóng vai trò gì?",
+            options: ["Chỉ ý nghĩa về cây cối", "Chỉ âm đọc của chữ", "Chỉ hành động tưới nước", "Chỉ dụng cụ làm vườn"],
+            a: "Chỉ ý nghĩa về cây cối",
+            expl: "Bộ Mộc (木) vẽ hình cái cây có tán và rễ, dùng cho các loại cây thân gỗ hoặc đồ vật làm từ gỗ.",
+            icon: "🌳"
+        },
+        {
+            q: "Chữ '河' (hé - sông) có bộ Thủy (氵) bên trái. Bộ này tượng trưng cho?",
+            options: ["Ba giọt nước chảy", "Nước đóng băng", "Cơn mưa rơi", "Đám mây"],
+            a: "Ba giọt nước chảy",
+            expl: "Bộ Thủy biến thể (氵) thường nằm bên trái, chỉ các sự vật liên quan đến nước như sông, hồ, biển.",
+            icon: "🌊"
+        },
+        {
+            q: "Bộ Trúc (竹) trong chữ '笔' (bǐ - bút) gợi nhớ đến chất liệu làm bút thời xưa là gì?",
+            options: ["Cây tre/trúc", "Gỗ", "Lông thú", "Kim loại"],
+            a: "Cây tre/trúc",
+            expl: "Ngày xưa thân bút thường được làm từ tre hoặc trúc, nên bộ Trúc (竹) nằm ở phía trên chữ Bút.",
+            icon: "🎋"
+        },
+        {
+            q: "Trong chữ '热' (rè - nóng), 4 dấu chấm ở dưới (灬) là biến thể của bộ nào?",
+            options: ["Bộ Hỏa (lửa)", "Bộ Thủy (nước)", "Bộ Điền (ruộng)", "Bộ Thạch (đá)"],
+            a: "Bộ Hỏa (lửa)",
+            expl: "Bộ Hỏa khi nằm dưới thường viết thành 4 dấu chấm (灬), tượng trưng cho ngọn lửa đang đốt cháy phía dưới.",
+            icon: "🔥"
+        },
+        {
+            q: "Chữ '冰' (bīng - băng) có bộ Băng (冫) gồm 2 chấm. Nó mang nghĩa là gì?",
+            options: ["Lạnh giá, đóng băng", "Nước chảy xiết", "Gió thổi", "Lửa cháy nhỏ"],
+            a: "Lạnh giá, đóng băng",
+            expl: "Bộ Băng (冫) chỉ có 2 chấm, đại diện cho sự lạnh lẽo hoặc trạng thái đông cứng của nước.",
+            icon: "🧊"
+        },
+        {
+            q: "Bộ Nhật (日) trong chữ '明' (míng - sáng) tượng trưng cho vật thể nào?",
+            options: ["Mặt trời", "Mặt trăng", "Ngôi sao", "Ngọn đèn"],
+            a: "Mặt trời",
+            expl: "Bộ Nhật (日) vẽ hình mặt trời hình tròn có vạch ở giữa, chỉ thời gian hoặc sự chiếu sáng.",
+            icon: "☀️"
+        },
+        {
+            q: "Bộ Nguyệt (月) trong chữ '期' (qī - thời hạn) tượng trưng cho?",
+            options: ["Mặt trăng", "Cái miệng", "Con mắt", "Bàn tay"],
+            a: "Mặt trăng",
+            expl: "Bộ Nguyệt (月) vẽ hình trăng khuyết, thường liên quan đến mặt trăng hoặc các bộ phận cơ thể con người.",
+            icon: "🌙"
+        },
+        {
+            q: "Chữ '山' (shān - núi) mô phỏng hình ảnh gì?",
+            options: ["Ba ngọn núi nhấp nhô", "Một thung lũng sâu", "Một cái hang", "Một vách đá dốc"],
+            a: "Ba ngọn núi nhấp nhô",
+            expl: "Chữ Sơn (山) là chữ tượng hình vẽ lại hình dáng của các đỉnh núi cạnh nhau.",
+            icon: "⛰️"
+        },
+        {
+            q: "Bộ Thạch (石) trong chữ '矿' (kuàng - khoáng sản) có nghĩa là gì?",
+            options: ["Đá", "Cát", "Vàng", "Đất"],
+            a: "Đá",
+            expl: "Bộ Thạch (石) vẽ hòn đá dưới vách núi, chỉ những gì liên quan đến đá, khoáng vật cứng.",
+            icon: "🪨"
+        },
+        {
+            q: "Trong chữ '林' (lín - rừng), việc lặp lại 2 bộ Mộc (木) có ý nghĩa gì?",
+            options: ["Nhiều cây tạo thành rừng", "Cây đang lớn", "Chặt cây", "Cây có hoa"],
+            a: "Nhiều cây tạo thành rừng",
+            expl: "Hai bộ Mộc đứng cạnh nhau chỉ nơi có nhiều cây (rừng thưa), ba bộ Mộc (森) chỉ rừng rậm.",
+            icon: "🌲"
+        },
+        {
+            q: "Bộ Vũ (雨) trong chữ '雪' (xuě - tuyết) gợi ý hiện tượng gì?",
+            options: ["Mưa", "Sấm sét", "Gió", "Mây"],
+            a: "Mưa",
+            expl: "Bộ Vũ (雨) vẽ những hạt mưa rơi dưới đám mây, dùng cho các hiện tượng thời tiết liên quan đến bầu trời.",
+            icon: "🌧️"
+        },
+        {
+            q: "Chữ '草' (cǎo - cỏ) có bộ Thảo (艹) phía trên và chữ Nhật (日) phía dưới. Ý nghĩa ban đầu là?",
+            options: ["Cỏ nảy mầm dưới ánh nắng mặt trời", "Cỏ khô", "Cỏ mọc đêm", "Hoa cỏ"],
+            a: "Cỏ nảy mầm dưới ánh nắng mặt trời",
+            expl: "Mặt trời (Nhật) sưởi ấm giúp cỏ (Thảo) sinh sôi, nảy mầm.",
+            icon: "🌿"
+        },
+        {
+            q: "Bộ Thổ (土) trong chữ '场' (chǎng - sân bãi) chỉ điều gì?",
+            options: ["Mặt đất, đất đai", "Cái cây", "Nước", "Con người"],
+            a: "Mặt đất, đất đai",
+            expl: "Bộ Thổ (土) vẽ hình đất bồi lên, liên quan đến các địa điểm, nền đất.",
+            icon: "🏟️"
+        },
+        {
+            q: "Chữ '泉' (quán - suối) có bộ Thủy (水) ở dưới. Hình ảnh phía trên là gì?",
+            options: ["Nguồn nước chảy ra từ vách đá", "Mặt trời", "Đám mây", "Con cá"],
+            a: "Nguồn nước chảy ra từ vách đá",
+            expl: "Chữ Tuyền (泉) vẽ hình nguồn nước tinh khiết từ trong động hoặc vách núi chảy ra.",
+            icon: "⛲"
+        },
+        {
+            q: "Bộ Phong (风) trong chữ '飘' (piāo - bay lượn) mang nghĩa là gì?",
+            options: ["Gió", "Mưa", "Nắng", "Bụi"],
+            a: "Gió",
+            expl: "Bộ Phong (风) vẽ luồng không khí chuyển động, dùng cho các hiện tượng liên quan đến sức gió.",
+            icon: "💨"
+        },
+        {
+            q: "Chữ '海' (hǎi - biển) có bộ Thủy (氵). Ngoài nước, nó còn có bộ 'Mẫu' (母 - mẹ) ý chỉ?",
+            options: ["Biển rộng lớn bao dung như mẹ", "Biển là nơi mẹ ở", "Mẹ thích biển", "Sóng biển nhỏ"],
+            a: "Biển rộng lớn bao dung như mẹ",
+            expl: "Sự kết hợp giữa Thủy và Mẫu gợi hình ảnh biển cả là nguồn gốc sự sống, bao la như lòng mẹ.",
+            icon: "🌊"
+        },
+        {
+            q: "Bộ Kim (金) trong chữ '银' (yín - bạc) chỉ điều gì?",
+            options: ["Kim loại, tiền bạc", "Gỗ quý", "Đất đỏ", "Nước chảy"],
+            a: "Kim loại, tiền bạc",
+            expl: "Bộ Kim (金) vốn vẽ những hạt vàng trong lòng đất, chỉ kim loại nói chung.",
+            icon: "💰"
+        },
+        {
+            q: "Bộ Khí (气) trong chữ '汽' (qì - hơi nước) tượng trưng cho?",
+            options: ["Hơi thở, không khí", "Chất lỏng", "Vật rắn", "Ánh sáng"],
+            a: "Hơi thở, không khí",
+            expl: "Bộ Khí (气) vẽ những luồng mây hoặc hơi thở bốc lên, chỉ trạng thái khí.",
+            icon: "☁️"
+        },
+        {
+            q: "Học bộ thủ nhóm Thiên nhiên giúp bạn?",
+            options: ["Nhận diện từ về môi trường, thực vật nhanh hơn", "Biết cách nấu ăn", "Học đếm số", "Nhớ tên người"],
+            a: "Nhận diện từ về môi trường, thực vật nhanh hơn",
+            expl: "Hầu hết các từ về cây cối, thời tiết, địa hình đều chứa các bộ thủ này. Nắm vững chúng giúp bạn đoán nghĩa từ cực siêu!",
+            icon: "🎓"
+        }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function playSfx(id) {
+        const sound = document.getElementById(id);
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => {});
+        }
+    }
+
+    function startGame() {
+        playSfx('s-pop');
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const data = natureQuiz[currentQ];
+        const options = shuffle([...data.options]);
+        
+        document.getElementById('q-idx').innerText = currentQ + 1;
+        document.getElementById('q-text').innerText = data.q;
+        document.getElementById('v-icon').innerText = data.icon;
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = "";
+        
+        options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = "opt-btn";
+            btn.innerHTML = `<span style="background:var(--nature-green); color:white; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; margin-right:12px; font-size:14px">${String.fromCharCode(65+i)}</span> ${opt}`;
+            btn.onclick = () => checkAnswer(btn, opt);
+            optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById('expl-box').style.display = "none";
+        document.getElementById('next-btn').style.display = "none";
+        
+        const progress = (currentQ / natureQuiz.length) * 100;
+        document.getElementById('progress-fill').style.width = progress + "%";
+    }
+
+    function checkAnswer(btn, selected) {
+        const data = natureQuiz[currentQ];
+        const allBtns = document.querySelectorAll('.opt-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        if (selected === data.a) {
+            btn.classList.add('correct');
+            score += 10;
+            playSfx('s-correct');
+        } else {
+            btn.classList.add('wrong');
+            playSfx('s-wrong');
+            allBtns.forEach(b => {
+                if (b.innerText.includes(data.a)) b.classList.add('correct');
+            });
+        }
+
+        document.getElementById('expl-text').innerText = data.expl;
+        document.getElementById('expl-box').style.display = "block";
+        document.getElementById('next-btn').style.display = "block";
+    }
+
+    function nextQuestion() {
+        playSfx('s-pop');
+        currentQ++;
+        if (currentQ < natureQuiz.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('progress-fill').style.width = "100%";
+
+        let msg = "";
+        if (score >= 180) msg = "Tuyệt vời! Bạn quả là 'Thần rừng' bộ thủ rồi đấy! 🌿";
+        else if (score >= 140) msg = "Rất tốt! Kiến thức về thiên nhiên của bạn rất vững chắc. 🌊";
+        else msg = "Bạn đã có cố gắng! Hãy xem lại phần giải thích để nảy mầm kiến thức nhé! 🌱";
+        document.getElementById('final-msg').innerText = msg;
+    }
+</script>
+</body>
+</html>

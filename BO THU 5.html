@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nga Học HSK - Bộ Thủ Nhóm 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --nga-pink: #ff85a2;
+            --nga-pink-light: #ffb3c1;
+            --nga-blue: #70d6ff;
+            --nga-blue-dark: #45b3e0;
+            --nga-mint: #95fbcc;
+            --nga-dark: #2d3436;
+            --white: #ffffff;
+            --success: #2ecc71;
+            --error: #ff7675;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #e0f7ff 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--white);
+            min-height: 90vh;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(255, 133, 162, 0.15);
+            display: flex;
+            flex-direction: column;
+            border-radius: 30px;
+            margin: 10px;
+            border: 6px solid var(--white);
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            flex-direction: column;
+            padding: 30px;
+            flex-grow: 1;
+            animation: slideIn 0.4s ease-out;
+        }
+        .active { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Header & Progress */
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--nga-pink);
+            font-size: 24px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .progress-wrapper {
+            background: #eee;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--nga-pink), var(--nga-blue));
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Home Screen */
+        .welcome-hero {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            background: var(--nga-pink-light);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 5px solid var(--white);
+            box-shadow: 0 10px 20px rgba(255, 133, 162, 0.2);
+        }
+        .start-btn {
+            background: var(--nga-pink);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #e84393;
+            transition: 0.2s;
+            margin-top: 30px;
+        }
+        .start-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #e84393; }
+
+        /* Quiz UI */
+        .question-box {
+            background: #fdf2f5;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--nga-dark);
+            border: 2px solid var(--nga-pink-light);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-item {
+            background: white;
+            border: 2px solid #f0f0f0;
+            padding: 16px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .option-item:hover { border-color: var(--nga-blue); background: #f0faff; }
+        
+        /* Correct/Wrong States */
+        .option-item.correct {
+            background: var(--nga-mint) !important;
+            border-color: var(--success) !important;
+            color: #1b5e20;
+        }
+        .option-item.wrong {
+            background: #ffe0e0 !important;
+            border-color: var(--error) !important;
+            color: #b71c1c;
+        }
+
+        /* Explanation Box */
+        .explanation {
+            margin-top: 25px;
+            background: #e1f5fe;
+            padding: 15px;
+            border-radius: 15px;
+            border-left: 5px solid var(--nga-blue);
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        .explanation h4 { margin: 0 0 5px 0; color: var(--nga-blue-dark); font-size: 16px; }
+        .explanation p { margin: 0; font-size: 14px; color: #555; line-height: 1.5; }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: auto;
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .next-btn {
+            background: var(--nga-blue);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Feedback Popups */
+        #feedback-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 100px;
+            z-index: 10;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .show-pop { transform: translate(-50%, -50%) scale(1.2) !important; }
+
+        /* Result Screen */
+        .result-circle {
+            width: 150px;
+            height: 150px;
+            border: 8px solid var(--nga-pink);
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-num { font-size: 48px; font-weight: 800; color: var(--nga-pink); }
+    </style>
+</head>
+<body>
+
+    <!-- Hệ thống âm thanh (giả lập qua Audio Context) -->
+    
+    <div class="app-container">
+        <!-- Home -->
+        <div id="home" class="screen active">
+            <div class="welcome-hero">
+                <div class="avatar-circle">👩‍🏫</div>
+                <h2 style="color:var(--nga-dark); margin-bottom:10px;">Chào mừng bạn!</h2>
+                <p style="color:#666; line-height:1.6">Hôm nay cô Nga sẽ cùng bạn chinh phục <br> <b>Bộ Thủ Nhóm 5: Công cụ & Vật chất</b> nhé!</p>
+                <button class="start-btn" onclick="startGame()">BẮT ĐẦU HỌC 🌸</button>
+            </div>
+        </div>
+
+        <!-- Quiz -->
+        <div id="quiz" class="screen">
+            <div class="header">
+                <div class="brand-name">
+                    <span style="background:var(--nga-pink); color:white; padding:2px 8px; border-radius:5px">NGA</span> 
+                    <span>HỌC HSK</span>
+                </div>
+                <div class="progress-wrapper">
+                    <div id="progress-bar" class="progress-fill"></div>
+                </div>
+                <small id="progress-text" style="color:#999; font-weight:600">Câu 1/20</small>
+            </div>
+
+            <div id="question" class="question-box"></div>
+            
+            <div id="options" class="options-list"></div>
+
+            <div id="explanation" class="explanation">
+                <h4>✨ Giải thích từ cô Nga:</h4>
+                <p id="exp-text"></p>
+            </div>
+
+            <div class="footer-nav">
+                <button id="next-btn" class="next-btn" onclick="nextQuestion()">TIẾP TỤC ➔</button>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="result" class="screen">
+            <div style="text-align: center;">
+                <h2 style="color:var(--nga-blue-dark)">KẾT QUẢ CỦA BẠN</h2>
+                <div class="result-circle">
+                    <span id="score-val" class="score-num">0</span>
+                    <small style="font-weight:700">ĐIỂM</small>
+                </div>
+                <p id="result-msg" style="font-weight:600; color:#555; margin-bottom:30px"></p>
+                <button class="start-btn" onclick="location.reload()">HỌC LẠI NÀO 🔄</button>
+            </div>
+        </div>
+
+        <!-- Feedback Icon -->
+        <div id="feedback-icon"></div>
+    </div>
+
+<script>
+    // Dữ liệu câu hỏi
+    const quizData = [
+        { q: "Bộ Đao (刀) tượng trưng cho vật dụng gì?", a: "Con dao, thanh kiếm", exp: "Bộ Đao (刀) mô phỏng hình dáng một con dao. Các chữ liên quan đến cắt, chém, phân chia (như 'Phân' 分) đều có bộ này.", options: ["Cái thìa", "Con dao, thanh kiếm", "Cái búa", "Cái kéo"] },
+        { q: "Tại sao bộ Bối (贝) lại liên quan đến tiền bạc?", a: "Vì thời xưa dùng vỏ sò làm tiền", exp: "Người xưa dùng vỏ sò (Bối) làm vật trao đổi. Do đó, các chữ như 'Quý' 贵 (đắt), 'Tiền' 财 (tài sản) đều có bộ Bối.", options: ["Vì vỏ sò lấp lánh như vàng", "Vì thời xưa dùng vỏ sò làm tiền", "Vì vỏ sò hiếm", "Vì người giàu thích sưu tầm vỏ sò"] },
+        { q: "Bộ Môn (门) mô tả hình ảnh gì?", a: "Cửa hai cánh", exp: "Bộ Môn (门) vẽ hai cánh cửa mở ra. Nếu chỉ có một cánh cửa, người ta dùng bộ Hộ (户).", options: ["Cửa hai cánh", "Cánh cổng đá", "Cửa sổ", "Bức tường nhà"] },
+        { q: "Bộ Kim (金) thường xuất hiện trong các chữ chỉ?", a: "Kim loại, vàng, tiền", exp: "Bộ Kim vẽ hình quặng quý trong lòng đất. Nó đại diện cho tất cả các loại kim loại như sắt, đồng, vàng, bạc.", options: ["Đất đai", "Gỗ quý", "Kim loại, vàng, tiền", "Nước suối"] },
+        { q: "Bộ Xa (车) nguyên thủy mô tả gì?", a: "Xe ngựa nhìn từ trên xuống", exp: "Chữ Xa (车) vẽ hình cái trục và hai bánh xe. Bất kỳ phương tiện vận chuyển nào có bánh đều dùng bộ này.", options: ["Cái lồng", "Xe đẩy tay", "Con ngựa", "Xe ngựa nhìn từ trên xuống"] },
+        { q: "Bộ Cung (弓) tượng trưng cho vật dụng nào?", a: "Cánh cung", exp: "Bộ Cung (弓) vẽ hình cánh cung đang giương. Các chữ như 'Dẫn' 引 (kéo dài) lấy ý nghĩa từ việc kéo dây cung.", options: ["Sợi dây", "Cánh cung", "Cây gậy", "Cái thang"] },
+        { q: "Bộ Mãnh (皿) chỉ loại đồ vật nào?", a: "Bát, đĩa, đồ đựng", exp: "Bộ Mãnh (皿) vẽ hình một chiếc bát hoặc khay đựng thức ăn. Chữ 'Bàn' 盘 (cái mâm) có bộ này.", options: ["Bát, đĩa, đồ đựng", "Chổi quét nhà", "Quần áo", "Giường ngủ"] },
+        { q: "Bộ Y (衤) thường liên quan đến?", a: "Quần áo, vải vóc", exp: "Bộ Y khi đứng bên trái sẽ biến thể thành (衤), mô tả tà áo. Cần phân biệt với bộ Thị (礻) chỉ có một chấm.", options: ["Đồ ăn", "Quần áo, vải vóc", "Thần linh", "Cây cỏ"] },
+        { q: "Bộ Thạch (石) mô tả vật chất nào?", a: "Đá", exp: "Bộ Thạch vẽ hình vách núi và một tảng đá bên dưới. Các chữ như 'Nham' 岩 (núi đá) có bộ này.", options: ["Cát", "Gỗ", "Đá", "Đất sét"] },
+        { q: "Bộ Ngọc (玉) trong chữ Hán thường chỉ?", a: "Đồ trang sức quý giá", exp: "Chữ Ngọc vẽ chuỗi ngọc xâu lại. Khi làm bộ bên trái, nó thường bỏ dấu chấm, trông giống chữ Vương (王).", options: ["Gỗ quý", "Vàng", "Thức ăn", "Đồ trang sức quý giá"] },
+        { q: "Bộ Cân (斤) nguyên thủy là hình ảnh của?", a: "Cái rìu", exp: "Bộ Cân (斤) vẽ hình cái rìu để chặt cây. Sau này nó được mượn làm đơn vị đo trọng lượng (cân).", options: ["Cái cân", "Cái rìu", "Cái búa", "Cái kéo"] },
+        { q: "Bộ Chu (舟) liên quan đến phương tiện nào?", a: "Thuyền bè", exp: "Bộ Chu (舟) vẽ hình một con thuyền nhỏ đang trôi. Các chữ liên quan đến hàng hải thường có bộ này.", options: ["Xe cộ", "Máy bay", "Thuyền bè", "Ngựa"] },
+        { q: "Bộ Võng (网) có nghĩa là gì?", a: "Cái lưới", exp: "Bộ Võng vẽ những sợi dây đan chéo nhau. Nó liên quan đến việc đánh cá hoặc bẫy thú bằng lưới.", options: ["Cái lồng", "Cái lưới", "Cánh cửa", "Hàng rào"] },
+        { q: "Bộ Thị (礻) thường gặp trong các chữ chỉ?", a: "Thần linh, thờ cúng", exp: "Bộ Thị (礻) vẽ hình cái bàn thờ. Chữ 'Phúc' 福 hay 'Lễ' 礼 đều có bộ này để chỉ sự linh thiêng.", options: ["May vá", "Thần linh, thờ cúng", "Nấu ăn", "Lao động"] },
+        { q: "Bộ Sách (册) mô tả hình ảnh sách cổ như thế nào?", a: "Các thẻ tre xâu lại", exp: "Thời xưa chưa có giấy, người ta viết lên thẻ tre rồi dùng dây xâu lại thành từng tập, tạo thành chữ Sách (册).", options: ["Cuốn giấy", "Tấm bảng đá", "Các thẻ tre xâu lại", "Quyển vở"] },
+        { q: "Bộ Đẩu (斗) tượng trưng cho vật dụng gì?", a: "Cái đấu đong gạo", exp: "Bộ Đẩu vẽ hình cái muôi lớn hoặc cái đấu dùng để đong lương thực.", options: ["Cái đấu đong gạo", "Cái cưa", "Cái đục", "Cái thang"] },
+        { q: "Bộ Phụ (阝- bên trái) có nghĩa là gì?", a: "Gò đất, đồi núi", exp: "Bộ Phụ (阝 đứng bên trái) vẽ hình các bậc thang đất hoặc đồi núi. Ví dụ chữ 'Dương' 阳 (mặt trời mọc sau núi).", options: ["Sông ngòi", "Gò đất, đồi núi", "Thành quách", "Cánh đồng"] },
+        { q: "Bộ Thước (勺) mô phỏng?", a: "Cái thìa, muôi", exp: "Bộ Thước vẽ hình cái muôi đang múc một vật gì đó (dấu chấm bên trong).", options: ["Cái thìa, muôi", "Cái bát", "Cái đũa", "Cái chảo"] },
+        { q: "Bộ Cấn (艮) thường mang nghĩa là?", a: "Dừng lại, bền vững", exp: "Bộ Cấn thường xuất hiện trong các chữ liên quan đến sự ngăn chặn hoặc cứng rắn như đá.", options: ["Chạy nhanh", "Dừng lại, bền vững", "Cháy sáng", "Tan chảy"] },
+        { q: "Học bộ thủ nhóm 5 giúp bạn hiểu điều gì?", a: "Logic về vật chất và đời sống", exp: "Nhóm này phản ánh cách người xưa quan sát công cụ lao động và giá trị tài sản trong đời sống hằng ngày.", options: ["Tên các loài vật", "Cảm xúc con người", "Logic về vật chất và đời sống", "Thời tiết khí hậu"] }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    // Âm thanh giả lập
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type, duration) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function startGame() {
+        document.getElementById('home').classList.remove('active');
+        document.getElementById('quiz').classList.add('active');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        isAnswered = false;
+        const data = quizData[currentQuestion];
+        
+        // Update UI
+        document.getElementById('question').innerText = data.q;
+        document.getElementById('exp-text').innerText = data.exp;
+        document.getElementById('explanation').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        
+        // Progress
+        const progress = ((currentQuestion + 1) / quizData.length) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').innerText = `Câu ${currentQuestion + 1}/${quizData.length}`;
+
+        // Options - Xáo trộn
+        const optionsContainer = document.getElementById('options');
+        optionsContainer.innerHTML = '';
+        const shuffledOptions = [...data.options].sort(() => Math.random() - 0.5);
+        
+        shuffledOptions.forEach(opt => {
+            const div = document.createElement('div');
+            div.className = 'option-item';
+            div.innerHTML = `<span>${opt}</span><i class="fa-solid fa-circle-check" style="opacity:0"></i>`;
+            div.onclick = () => checkAnswer(div, opt);
+            optionsContainer.appendChild(div);
+        });
+    }
+
+    function checkAnswer(element, selected) {
+        if (isAnswered) return;
+        isAnswered = true;
+        
+        const data = quizData[currentQuestion];
+        const feedbackIcon = document.getElementById('feedback-icon');
+        
+        if (selected === data.a) {
+            score += 5;
+            element.classList.add('correct');
+            element.querySelector('i').style.opacity = 1;
+            playSound(880, 'sine', 0.2); // Âm thanh đúng
+            feedbackIcon.innerHTML = '✅';
+        } else {
+            element.classList.add('wrong');
+            playSound(220, 'sawtooth', 0.3); // Âm thanh sai
+            feedbackIcon.innerHTML = '❌';
+            
+            // Hiện đáp án đúng
+            const items = document.querySelectorAll('.option-item');
+            items.forEach(item => {
+                if (item.innerText.includes(data.a)) {
+                    item.classList.add('correct');
+                }
+            });
+        }
+
+        // Hiện pop-up hiệu ứng
+        feedbackIcon.classList.add('show-pop');
+        setTimeout(() => feedbackIcon.classList.remove('show-pop'), 600);
+
+        document.getElementById('explanation').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz').classList.remove('active');
+        document.getElementById('result').classList.add('active');
+        document.getElementById('score-val').innerText = score;
+        
+        let msg = "";
+        if (score === 100) msg = "Quá đỉnh! Bạn là bậc thầy bộ thủ rồi đấy! 🏆";
+        else if (score >= 80) msg = "Giỏi lắm! Kiến thức của bạn rất vững chắc. 🌟";
+        else if (score >= 50) msg = "Khá tốt! Cố gắng luyện tập thêm chút nữa nhé. 💪";
+        else msg = "Đừng buồn, hãy cùng cô Nga ôn tập lại nhé! ❤️";
+        
+        document.getElementById('result-msg').innerText = msg;
+    }
+</script>
+</body>
+</html>

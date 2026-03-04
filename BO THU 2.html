@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Mã Bộ Thủ 2 - Nga Học HSK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-pink: #ff85a1;
+            --primary-blue: #4cc9f0;
+            --accent-yellow: #ffde59;
+            --dark-text: #2d3436;
+            --light-bg: #fff5f7;
+            --success: #00b894;
+            --wrong: #ff7675;
+        }
+
+        * { box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #fdf2f8 0%, #e0f2fe 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 850px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border: 6px solid var(--primary-blue);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            padding: 30px;
+            animation: slideIn 0.4s ease-out;
+            flex-grow: 1;
+        }
+
+        .active { display: flex; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Welcome Screen */
+        #welcome-screen { text-align: center; justify-content: center; background: url('https://www.transparenttextures.com/patterns/cubes.png'); }
+        .logo { font-size: 70px; margin-bottom: 15px; }
+        .main-title { font-family: 'Comfortaa', cursive; color: var(--primary-pink); font-size: 35px; margin: 0; }
+        .sub-title { color: var(--primary-blue); font-size: 20px; font-weight: 700; margin-bottom: 30px; }
+        
+        .btn-play {
+            padding: 18px 50px;
+            font-size: 22px;
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #e05d7a;
+            transition: 0.2s;
+            font-weight: 800;
+        }
+        .btn-play:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #e05d7a; }
+        .btn-play:active { transform: translateY(3px); box-shadow: 0 3px 0 #e05d7a; }
+
+        /* Game Header */
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .progress-bar-bg { flex-grow: 1; height: 14px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary-blue), var(--primary-pink)); transition: 0.4s; }
+        .badge { background: var(--primary-blue); color: white; padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 14px; }
+
+        /* Question & Body */
+        .question-box { font-size: 20px; font-weight: 700; color: var(--dark-text); margin-bottom: 20px; line-height: 1.5; }
+        .game-layout { display: grid; grid-template-columns: 1fr 250px; gap: 20px; }
+        
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .opt-btn {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            padding: 14px 20px;
+            border-radius: 15px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary-pink); background: #fff5f7; }
+        .opt-btn.correct { background: var(--success) !important; color: white; border-color: #009473; }
+        .opt-btn.wrong { background: var(--wrong) !important; color: white; border-color: #d63031; }
+
+        .visual-hint {
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 3px dashed var(--primary-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            height: 220px;
+        }
+        .visual-hint span { font-size: 16px; font-weight: 700; color: var(--primary-blue); margin-top: 10px; }
+
+        /* Explanation Box */
+        .explanation-box {
+            margin-top: 20px;
+            background: #f0f9ff;
+            border-radius: 15px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-blue);
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .explanation-box h4 { margin: 0 0 5px 0; color: var(--primary-blue); display: flex; align-items: center; gap: 8px; }
+        .explanation-box p { margin: 0; font-size: 15px; color: #475569; line-height: 1.4; }
+
+        /* Footer */
+        .footer { margin-top: auto; padding-top: 20px; display: flex; justify-content: flex-end; }
+        .btn-next {
+            background: var(--primary-blue);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #3ba3c4;
+            display: none;
+        }
+        .btn-next:hover { background: #63d3f2; }
+
+        /* Result Screen */
+        #result-screen { text-align: center; align-items: center; justify-content: center; }
+        .score-circle {
+            width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary-pink);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .score-circle b { font-size: 40px; color: var(--primary-pink); }
+
+        @media (max-width: 700px) {
+            .game-layout { grid-template-columns: 1fr; }
+            .visual-hint { height: 120px; font-size: 50px; order: -1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Âm thanh -->
+<audio id="s-correct" src="https://assets.mixkit.co/active_storage/sfx/2012/2012-preview.mp3"></audio>
+<audio id="s-wrong" src="https://assets.mixkit.co/active_storage/sfx/251/251-preview.mp3"></audio>
+<audio id="s-pop" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+
+<div class="game-wrapper">
+    <!-- MÀN HÌNH CHÀO -->
+    <div id="welcome-screen" class="screen active">
+        <div class="logo">🏘️</div>
+        <h1 class="main-title">BIỆT ĐỘI GIẢI MÃ BỘ THỦ 2</h1>
+        <div class="sub-title">NHÀ CỬA • NƠI CHỐN • XÃ HỘI</div>
+        <button class="btn-play" onclick="startGame()">BẮT ĐẦU HỌC 🚀</button>
+        <p style="margin-top: 20px; color: #64748b; font-size: 14px;">Giáo án độc quyền: <b>Nga Học HSK</b></p>
+    </div>
+
+    <!-- MÀN HÌNH CHƠI -->
+    <div id="game-screen" class="screen">
+        <div class="header">
+            <div class="badge">Nga Học HSK</div>
+            <div class="progress-bar-bg"><div id="progress-fill" class="progress-fill"></div></div>
+            <div style="font-weight:800; min-width:60px;">Q: <span id="q-idx">1</span>/20</div>
+        </div>
+
+        <div id="q-text" class="question-box">Đang tải câu hỏi...</div>
+
+        <div class="game-layout">
+            <div id="options" class="options-list"></div>
+            <div class="visual-hint">
+                <div id="v-icon">🏠</div>
+                <span id="v-label">Gợi ý</span>
+            </div>
+        </div>
+
+        <div id="expl-box" class="explanation-box">
+            <h4><i class="fa-solid fa-lightbulb"></i> Giải thích từ Cô Nga:</h4>
+            <p id="expl-text"></p>
+        </div>
+
+        <div class="footer">
+            <button id="next-btn" class="btn-next" onclick="nextQuestion()">TIẾP THEO <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH KẾT QUẢ -->
+    <div id="result-screen" class="screen">
+        <div style="font-size:80px">🎊</div>
+        <h2 style="color:var(--primary-blue)">HOÀN THÀNH THỬ THÁCH!</h2>
+        <div class="score-circle">
+            <span style="font-size:14px; font-weight:700">ĐIỂM SỐ</span>
+            <b id="final-score">0</b>
+        </div>
+        <p id="final-msg" style="font-weight:600; color:#475569; margin-bottom: 25px;"></p>
+        <button class="btn-play" onclick="location.reload()">LÀM LẠI TỪ ĐẦU</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        { 
+            q: "Chữ '家' (jiā - nhà) có bộ Miên (宀). Hình ảnh bộ này tượng trưng cho điều gì?", 
+            options: ["Mái nhà che chở", "Mái hiên rộng", "Cánh cửa", "Hang động"], 
+            a: "Mái nhà che chở", 
+            expl: "Bộ Miên (宀) vẽ hình mái nhà có nóc và tường che chắn, biểu thị nơi cư ngụ ấm áp.", 
+            icon: "🏠" 
+        },
+        { 
+            q: "Trong chữ '店' (diàn - cửa hàng), bộ Nghiễm (广) biểu thị điều gì?", 
+            options: ["Nhà dựa vào sườn núi (mái hiên)", "Mái nhà kín", "Khu chợ", "Cái miệng"], 
+            a: "Nhà dựa vào sườn núi (mái hiên)", 
+            expl: "Bộ Nghiễm (广) khác bộ Miên ở chỗ nó khuyết một bên tường, tượng trưng cho những tòa nhà lớn hoặc mái hiên.", 
+            icon: "🏪" 
+        },
+        { 
+            q: "Chữ '问' (wèn - hỏi) có bộ Môn (门) bao quanh. Tại sao?", 
+            options: ["Vì muốn hỏi phải đến cửa", "Vì tiếng cửa kêu", "Vì cửa bị hỏng", "Vì người đứng cạnh cửa"], 
+            a: "Vì muốn hỏi phải đến cửa", 
+            expl: "Chữ Vấn gồm bộ Môn (cửa) và chữ Khẩu (miệng). Hình ảnh cái miệng đặt ở cửa để hỏi han.", 
+            icon: "🚪" 
+        },
+        { 
+            q: "Trong từ '邻居' (línjū - hàng xóm), bộ 阝 (ấp) nằm bên PHẢI chữ '邻' chỉ điều gì?", 
+            options: ["Vùng đất, làng xóm", "Gò đất cao", "Con người", "Cái tai"], 
+            a: "Vùng đất, làng xóm", 
+            expl: "Bộ 阝 khi nằm bên phải là biến thể của bộ Ấp (邑), liên quan đến địa danh, làng mạc.", 
+            icon: "🏘️" 
+        },
+        { 
+            q: "Bộ Phụ (阝) khi nằm bên TRÁI như trong chữ '院' (yuàn - cái viện/sân) chỉ ý nghĩa gì?", 
+            options: ["Gò đất, nơi cao ráo", "Khu dân cư", "Bàn chân", "Cái thang"], 
+            a: "Gò đất, nơi cao ráo", 
+            expl: "Bộ 阝 nằm bên trái là biến thể của bộ Phụ (阜), thường chỉ địa hình núi non, gò đất cao hoặc các công trình lớn.", 
+            icon: "⛰️" 
+        },
+        { 
+            q: "Chữ '园' (yuán - vườn) có bộ Vi (囗) bao quanh. Bộ Vi mang nghĩa là gì?", 
+            options: ["Vây quanh, bao bọc", "Cái miệng rộng", "Bốn phương", "Mảnh đất"], 
+            a: "Vây quanh, bao bọc", 
+            expl: "Bộ Vi (囗) vẽ một không gian khép kín, chỉ những nơi có rào chắn như công viên, vương quốc.", 
+            icon: "🌳" 
+        },
+        { 
+            q: "Bộ Lý (里) trong chữ '野' (yě - hoang dã) chỉ đơn vị đo lường hoặc nơi chốn nào?", 
+            options: ["Dặm, làng xóm", "Cái miệng", "Mặt trời", "Cánh đồng"], 
+            a: "Dặm, làng xóm", 
+            expl: "Bộ Lý (里) gồm bộ Điền (ruộng) và bộ Thổ (đất). Nơi có ruộng đất là nơi người dân lập làng.", 
+            icon: "🛣️" 
+        },
+        { 
+            q: "Chữ '图' (tú - bản đồ/hình vẽ) có bộ Vi (囗). Tại sao?", 
+            options: ["Vì bản đồ được vẽ trong khung", "Vì bản đồ hình tròn", "Vì liên quan thức ăn", "Vì bản đồ làm từ giấy"], 
+            a: "Vì bản đồ được vẽ trong khung", 
+            expl: "Bản đồ hay tranh vẽ thường nằm trong một phạm vi giới hạn, do đó dùng bộ Vi bao quanh.", 
+            icon: "🗺️" 
+        },
+        { 
+            q: "Chữ '安' (ān - an toàn/yên tĩnh) gồm bộ Miên (宀) và bộ Nữ (女). Ý nghĩa là gì?", 
+            options: ["Người phụ nữ trong nhà thì yên ổn", "Phụ nữ đi vắng", "Nhà có nhiều người", "Phụ nữ đang nấu ăn"], 
+            a: "Người phụ nữ trong nhà thì yên ổn", 
+            expl: "Quan niệm xưa cho rằng phụ nữ ở trong nhà (dưới mái nhà) mang lại sự bình yên, ấm cúng.", 
+            icon: "🧘" 
+        },
+        { 
+            q: "Bộ Thạch (石) thường xuất hiện trong các chữ chỉ điều gì?", 
+            options: ["Đá, vật cứng", "Cây cối", "Đất đai", "Nước"], 
+            a: "Đá, vật cứng", 
+            expl: "Bộ Thạch vẽ hình hòn đá rơi dưới sườn núi, chỉ các vật liệu cứng hoặc đồ vật làm từ đá.", 
+            icon: "🪨" 
+        },
+        { 
+            q: "Chữ '回' (huí - quay về) gồm hai bộ Vi lồng vào nhau, gợi hình ảnh gì?", 
+            options: ["Dòng nước xoáy quay về", "Hai cái miệng", "Cánh cửa mở", "Con đường thẳng"], 
+            a: "Dòng nước xoáy quay về", 
+            expl: "Hình ảnh vòng tròn lồng nhau tượng trưng cho sự vận động quay trở lại tâm điểm.", 
+            icon: "🔄" 
+        },
+        { 
+            q: "Chữ '客' (kè - khách) có bộ Miên (宀). 'Khách' là người như thế nào?", 
+            options: ["Người đến nhà người khác", "Người đi ngoài đường", "Người bán hàng", "Người đang ngủ"], 
+            a: "Người đến nhà người khác", 
+            expl: "Chữ Khách gồm bộ Miên (nhà) và chữ Truy (đến). Người từ nơi khác đi đến nhà mình gọi là khách.", 
+            icon: "🤝" 
+        },
+        { 
+            q: "Bộ Thổ (土) trong chữ '地' (dì - đất) biểu thị điều gì?", 
+            options: ["Đất đai, thổ nhưỡng", "Cái cây", "Mặt trời", "Con đường"], 
+            a: "Đất đai, thổ nhưỡng", 
+            expl: "Bộ Thổ vẽ hình mầm cây nhú lên từ mặt đất, chỉ đất đai nói chung.", 
+            icon: "🌍" 
+        },
+        { 
+            q: "Bộ Tự (自) trong chữ 'sát' hoặc nghĩa gốc là gì?", 
+            options: ["Cái mũi", "Con mắt", "Bàn tay", "Cái miệng"], 
+            a: "Cái mũi", 
+            expl: "Người Trung Quốc xưa khi chỉ vào mình (tự mình) thường chỉ vào mũi. Bộ Tự vốn vẽ hình cái mũi.", 
+            icon: "👃" 
+        },
+        { 
+            q: "Chữ '室' (shì - phòng) có bộ Miên (宀) và chữ Chí (至 - đến). Nghĩa là?", 
+            options: ["Nơi đi đến và dừng lại (phòng)", "Người đang đi", "Nhà không có cửa", "Mái hiên rộng"], 
+            a: "Nơi đi đến và dừng lại (phòng)", 
+            expl: "Phòng là nơi ta đi đến để nghỉ ngơi hoặc làm việc lâu dài.", 
+            icon: "🛌" 
+        },
+        { 
+            q: "Bộ Quảng (广) và bộ Miên (宀) khác nhau điểm cơ bản nào?", 
+            options: ["Quảng hở 1 bên, Miên kín 2 bên", "Quảng to hơn Miên", "Miên dành cho vua", "Không khác nhau"], 
+            a: "Quảng hở 1 bên, Miên kín 2 bên", 
+            expl: "Quảng (广) tượng trưng cho mái hiên hoặc tòa nhà lớn dựa vào sườn núi, Miên (宀) là mái nhà ở dân dụng kín đáo.", 
+            icon: "📐" 
+        },
+        { 
+            q: "Chữ '国' (guó - quốc gia) có bộ Vi (囗) bao quanh chữ Ngọc (玉). Nghĩa là?", 
+            options: ["Bảo vệ báu vật trong biên giới", "Quốc gia làm từ ngọc", "Vua thích ngọc", "Mảnh đất hình tròn"], 
+            a: "Bảo vệ báu vật trong biên giới", 
+            expl: "Một quốc gia phải có biên giới (Vi) và bảo vệ những thứ quý giá như ngọc quý hoặc con dân.", 
+            icon: "🇻🇳" 
+        },
+        { 
+            q: "Bộ Môn (门) vẽ hình cái gì?", 
+            options: ["Cánh cửa hai cánh", "Bức tường", "Cái cửa sổ", "Cái thang"], 
+            a: "Cánh cửa hai cánh", 
+            expl: "Chữ Môn vẽ hình hai cánh cửa khép mở của ngôi nhà xưa.", 
+            icon: "🚪" 
+        },
+        { 
+            q: "Chữ '字' (zì - chữ) gồm bộ Miên (宀) và bộ Tử (子 - con). Tại sao?", 
+            options: ["Chữ cái nảy nở như con cái trong nhà", "Trẻ em đi học", "Dạy con viết chữ", "Chữ cái là con của mái nhà"], 
+            a: "Chữ cái nảy nở như con cái trong nhà", 
+            expl: "Thời xưa, chữ Hán được coi là sự sinh sôi nảy nở của tri thức, giống như con cái sinh ra dưới mái nhà.", 
+            icon: "✍️" 
+        },
+        { 
+            q: "Nhóm bộ thủ Nhà cửa giúp chúng ta nhận diện loại từ nào dễ nhất?", 
+            options: ["Địa danh, công trình, nơi ở", "Cảm xúc con người", "Các loài động vật", "Hành động bằng tay"], 
+            a: "Địa danh, công trình, nơi ở", 
+            expl: "Hầu hết các từ về nhà ở, cửa hàng, khu vườn, quốc gia đều chứa các bộ Miên, Quảng, Vi, Môn.", 
+            icon: "🎯" 
+        }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
+    function playSfx(id) {
+        const sound = document.getElementById(id);
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("Audio blocked"));
+    }
+
+    function startGame() {
+        playSfx('s-pop');
+        document.getElementById('welcome-screen').classList.remove('active');
+        document.getElementById('game-screen').classList.add('active');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        const data = quizData[currentQ];
+        const options = shuffle([...data.options]);
+        
+        document.getElementById('q-idx').innerText = currentQ + 1;
+        document.getElementById('q-text').innerText = data.q;
+        document.getElementById('v-icon').innerText = data.icon;
+        document.getElementById('v-label').innerText = "Gợi ý: " + data.icon;
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = "";
+        
+        options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = "opt-btn";
+            btn.innerHTML = `<b style="margin-right:10px">${String.fromCharCode(65+i)}.</b> ${opt}`;
+            btn.onclick = () => checkAnswer(btn, opt);
+            optionsDiv.appendChild(btn);
+        });
+
+        // Reset UI
+        document.getElementById('expl-box').style.display = "none";
+        document.getElementById('next-btn').style.display = "none";
+        
+        // Progress bar
+        const progress = (currentQ / quizData.length) * 100;
+        document.getElementById('progress-fill').style.width = progress + "%";
+    }
+
+    function checkAnswer(btn, selected) {
+        const data = quizData[currentQ];
+        const allBtns = document.querySelectorAll('.opt-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        if (selected === data.a) {
+            btn.classList.add('correct');
+            score += 10;
+            playSfx('s-correct');
+        } else {
+            btn.classList.add('wrong');
+            playSfx('s-wrong');
+            // Show correct one
+            allBtns.forEach(b => {
+                if (b.innerText.includes(data.a)) b.classList.add('correct');
+            });
+        }
+
+        // Show explanation
+        document.getElementById('expl-text').innerText = data.expl;
+        document.getElementById('expl-box').style.display = "block";
+        document.getElementById('next-btn').style.display = "block";
+    }
+
+    function nextQuestion() {
+        playSfx('s-pop');
+        currentQ++;
+        if (currentQ < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('game-screen').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('progress-fill').style.width = "100%";
+
+        let msg = "";
+        if (score >= 180) msg = "Tuyệt vời! Bạn là bậc thầy bộ thủ cùng Cô Nga rồi!";
+        else if (score >= 140) msg = "Rất tốt! Bạn đã nắm chắc nhóm Nhà cửa & Nơi chốn.";
+        else msg = "Khá lắm, hãy ôn tập lại phần giải thích để nhớ lâu hơn nhé!";
+        document.getElementById('final-msg').innerText = msg;
+    }
+</script>
+</body>
+</html>
