@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
   Leaf, 
@@ -10,55 +10,59 @@ import {
   Sparkles,
   TreeDeciduous,
   Bird,
-  Heart
+  Heart,
+  Settings,
+  Plus
 } from 'lucide-react';
 
 const App = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
   const [search, setSearch] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
-  const lessons = [
+  // MẢNG DỮ LIỆU BÀI HỌC - BẠN CÓ THỂ THAY ĐỔI NỘI DUNG TẠI ĐÂY
+  const [lessons, setLessons] = useState([
     {
-      id: 'hsk1-1-2',
+      id: 1,
       title: 'Hành trình HSK 1: Bài 1 & 2',
       desc: 'Những bước chân đầu tiên trên con đường chinh phục ngôn ngữ mới.',
       type: 'Cơ bản',
-      icon: <BookOpen className="text-[#FF758F]" size={28} />,
-      color: 'border-[#FFD6E0]',
+      icon: 'BookOpen',
       bg: 'bg-[#FFF5F7]',
+      color: '#FF758F',
       fileName: 'HSK1-LESSON1-2.html'
     },
     {
-      id: 'hsk1-3',
+      id: 2,
       title: 'Lời chào từ Trái tim: Bài 3',
       desc: 'Học cách trao đi lời chào và nhận lại những nụ cười ấm áp.',
       type: 'Giao tiếp',
-      icon: <Heart className="text-[#52B788]" size={28} />,
-      color: 'border-[#D8F3DC]',
+      icon: 'Heart',
       bg: 'bg-[#F0FFF4]',
+      color: '#52B788',
       fileName: 'HSK1-LESSON3.html'
     },
     {
-      id: 'bo-thu-1',
+      id: 3,
       title: 'Gốc rễ Ngôn từ: Bộ Thủ 1',
       desc: 'Khám phá bí mật ẩn giấu trong từng nét vẽ chữ Hán.',
       type: 'Bộ Thủ',
-      icon: <TreeDeciduous className="text-[#FF758F]" size={28} />,
-      color: 'border-[#FFD6E0]',
+      icon: 'TreeDeciduous',
       bg: 'bg-[#FFF5F7]',
+      color: '#FF758F',
       fileName: 'BO THU 1.html'
-    },
-    {
-      id: 'bo-thu-2',
-      title: 'Hương vị Thiên nhiên: Bộ Thủ 2',
-      desc: 'Khi chữ viết hòa quyện cùng hình ảnh cỏ cây hoa lá.',
-      type: 'Bộ Thủ',
-      icon: <Bird className="text-[#52B788]" size={28} />,
-      color: 'border-[#D8F3DC]',
-      bg: 'bg-[#F0FFF4]',
-      fileName: 'BO THU 2.html'
     }
-  ];
+  ]);
+
+  const getIcon = (iconName, color) => {
+    const props = { size: 28, style: { color: color } };
+    switch (iconName) {
+      case 'Heart': return <Heart {...props} />;
+      case 'TreeDeciduous': return <TreeDeciduous {...props} />;
+      case 'Bird': return <Bird {...props} />;
+      default: return <BookOpen {...props} />;
+    }
+  };
 
   const filtered = lessons.filter(l => 
     l.title.toLowerCase().includes(search.toLowerCase())
@@ -66,29 +70,16 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#F0F9F1] text-[#2D6A4F] selection:bg-[#FFC1CC] relative overflow-hidden">
-      {/* Import Soft Fonts */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Pangolin&family=Patrick+Hand&family=Mali:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Pangolin&family=Mali:wght@400;700&display=swap');
         
-        /* Font chính cho toàn bộ trang - Tròn trịa, dễ thương */
-        body { 
-          font-family: 'Comfortaa', cursive; 
-        }
-
-        /* Font tiêu đề - Phong cách viết tay Ghibli */
-        .ghibli-font { 
-          font-family: 'Pangolin', cursive; 
-        }
-
-        /* Font cho thương hiệu - Mềm mại nhất */
-        .brand-font { 
-          font-family: 'Mali', cursive; 
-        }
+        body { font-family: 'Comfortaa', cursive; }
+        .ghibli-font { font-family: 'Pangolin', cursive; }
+        .brand-font { font-family: 'Mali', cursive; }
 
         @keyframes fall {
           0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
           10% { opacity: 0.8; }
-          90% { opacity: 0.8; }
           100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
         
@@ -96,64 +87,58 @@ const App = () => {
           position: absolute;
           background: #FFC1CC;
           border-radius: 150% 0 150% 0;
-          opacity: 0.7;
           pointer-events: none;
           animation: fall linear infinite;
         }
 
-        .floating {
-          animation: floating 6s ease-in-out infinite;
-        }
-
+        .floating { animation: floating 6s ease-in-out infinite; }
         @keyframes floating {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-15px) rotate(2deg); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
         }
       `}</style>
 
-      {/* Background Decor */}
+      {/* Cánh hoa rơi lãng mạn */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(15)].map((_, i) => (
-          <div 
-            key={i}
-            className="petal"
-            style={{
-              width: Math.random() * 15 + 10 + 'px',
-              height: Math.random() * 15 + 10 + 'px',
-              left: Math.random() * 100 + '%',
-              animationDuration: Math.random() * 10 + 10 + 's',
-              animationDelay: Math.random() * 5 + 's',
-            }}
-          />
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className="petal" style={{
+            width: '15px', height: '15px',
+            left: Math.random() * 100 + '%',
+            animationDuration: (Math.random() * 10 + 10) + 's',
+            animationDelay: (Math.random() * 5) + 's',
+          }} />
         ))}
-        <Cloud className="absolute top-20 -left-20 text-white opacity-50 animate-[drift_80s_linear_infinite]" size={150} />
-        <Cloud className="absolute top-1/2 -right-20 text-white opacity-30 animate-[drift-reverse_100s_linear_infinite]" size={200} />
       </div>
 
-      {/* Navigation / Header */}
+      {/* Navigation */}
       <nav className="relative z-10 p-6 flex justify-between items-center">
         <div className="flex items-center gap-2 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50">
           <Leaf className="text-[#FF758F]" size={18} />
-          <span className="brand-font font-bold text-[#FF4D6D] text-lg">Nga Học HSK</span>
+          <span className="brand-font font-bold text-[#FF4D6D]">Nga Học HSK</span>
         </div>
+        
+        <button 
+          onClick={() => setIsEditMode(!isEditMode)}
+          className={`p-3 rounded-full transition-all ${isEditMode ? 'bg-[#FF758F] text-white' : 'bg-white text-[#2D6A4F]'} shadow-md`}
+        >
+          <Settings size={20} />
+        </button>
       </nav>
 
+      {/* Header */}
       <header className="relative z-10 pt-10 pb-16 px-6 text-center">
-        <div className="floating inline-block">
-          <div className="bg-[#FF758F] text-white px-6 py-2 rounded-full text-sm ghibli-font mb-6 shadow-lg shadow-[#FF758F]/20">
-            Chào mừng bạn đến với khu vườn nhỏ 🌿
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-[#1B4332] mb-6 brand-font leading-tight">
-            Nga Học HSK <br/> 
-            <span className="text-[#FF758F] text-3xl md:text-5xl">Góc nhỏ Tiếng Trung</span>
+        <div className="floating">
+          <h1 className="text-4xl md:text-6xl font-bold text-[#1B4332] mb-4 brand-font">
+            Khu Vườn <span className="text-[#FF758F]">HSK</span>
           </h1>
+          <p className="ghibli-font text-[#52B788]">Nơi tiếng Trung trở nên dịu dàng hơn</p>
         </div>
 
         <div className="max-w-md mx-auto relative mt-8">
           <input 
             type="text"
-            placeholder="Tìm một bài học xinh xắn..."
-            className="w-full px-8 py-4 rounded-full bg-white/90 border-2 border-[#B7E4C7] focus:border-[#FF758F] outline-none transition-all shadow-inner text-[#2D6A4F] ghibli-font"
+            placeholder="Tìm kiếm bài học..."
+            className="w-full px-8 py-4 rounded-full bg-white/90 border-2 border-[#B7E4C7] focus:border-[#FF758F] outline-none transition-all shadow-inner ghibli-font"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -161,99 +146,75 @@ const App = () => {
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="max-w-6xl mx-auto px-6 pb-24 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map((item) => (
             <div 
               key={item.id}
-              className={`${item.bg} rounded-[2rem] p-8 border border-white shadow-xl shadow-[#2D6A4F]/5 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative`}
+              className={`${item.bg} rounded-[2.5rem] p-8 border border-white shadow-xl hover:-translate-y-2 transition-all duration-500 group`}
             >
-              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-30 transition-opacity">
-                <Flower size={60} />
+              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+                {getIcon(item.icon, item.color)}
               </div>
               
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-[#F0F9F1]">
-                {item.icon}
-              </div>
-              
-              <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white text-[#52B788] ghibli-font border border-[#D8F3DC]">
-                {item.type}
-              </span>
-              
-              <h3 className="text-2xl font-bold mt-4 mb-3 text-[#1B4332] brand-font group-hover:text-[#FF758F] transition-colors">
+              <h3 className="text-2xl font-bold mb-3 text-[#1B4332] brand-font">
                 {item.title}
               </h3>
               
-              <p className="text-[#52B788] text-sm mb-8 leading-relaxed ghibli-font">
+              <p className="text-[#52B788] text-sm mb-8 ghibli-font leading-relaxed">
                 {item.desc}
               </p>
               
               <button 
                 onClick={() => setSelectedFile(item)}
-                className="w-full py-3.5 bg-white hover:bg-[#FF758F] hover:text-white text-[#FF758F] font-bold rounded-2xl border-2 border-[#FFD6E0] transition-all flex items-center justify-center gap-2 ghibli-font group/btn"
+                className="w-full py-3 bg-white hover:bg-[#FF758F] hover:text-white text-[#FF758F] font-bold rounded-xl border-2 border-[#FFD6E0] transition-all flex items-center justify-center gap-2 ghibli-font"
               >
-                Ghé thăm bài học
-                <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                Vào học
+                <ChevronRight size={18} />
               </button>
             </div>
           ))}
+
+          {isEditMode && (
+            <div className="border-4 border-dashed border-[#B7E4C7] rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-[#52B788] hover:bg-white/50 transition-all cursor-pointer">
+              <Plus size={40} className="mb-2" />
+              <p className="brand-font font-bold">Thêm bài mới</p>
+            </div>
+          )}
         </div>
       </main>
 
-      <footer className="relative z-10 py-12 text-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="p-3 bg-white/50 rounded-full">
-            <Sparkles className="text-[#FFB7C5]" size={24} />
-          </div>
-          <p className="brand-font text-xl text-[#FF4D6D] font-bold">Nga Học HSK</p>
-          <p className="ghibli-font text-sm text-[#409167]">Handcrafted with love for Chinese learners</p>
-        </div>
-      </footer>
-
-      {/* Modal */}
+      {/* Modal View */}
       {selectedFile && (
-        <div className="fixed inset-0 bg-[#081C15]/40 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-          <div className="bg-[#FDFFFC] w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden border-8 border-white flex flex-col p-8 animate-in zoom-in duration-300">
-            <div className="flex justify-between items-start mb-6">
-               <div className="bg-[#FFF5F7] p-3 rounded-2xl">
-                <BookOpen className="text-[#FF758F]" size={30} />
-               </div>
-               <button 
-                onClick={() => setSelectedFile(null)} 
-                className="w-10 h-10 flex items-center justify-center bg-[#F0F9F1] hover:bg-[#FFD6E0] rounded-full transition-all text-[#2D6A4F]"
-              >
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-white w-full max-w-sm rounded-[3rem] p-8 animate-in zoom-in duration-300">
+            <div className="flex justify-end mb-4">
+               <button onClick={() => setSelectedFile(null)} className="p-2 bg-[#F0F9F1] rounded-full">
                 <X size={20} />
               </button>
             </div>
             
-            <h3 className="text-2xl font-bold text-[#1B4332] mb-2 brand-font">Mở trang vở...</h3>
-            <p className="text-[#52B788] mb-6 ghibli-font">{selectedFile.title}</p>
+            <h3 className="text-2xl font-bold text-[#1B4332] mb-4 brand-font">{selectedFile.title}</h3>
             
-            <div className="bg-[#F0F9F1] rounded-2xl p-4 mb-8 border border-[#D8F3DC]">
-              <p className="text-[10px] text-[#409167] font-bold uppercase tracking-widest mb-1 ghibli-font">Đường dẫn tệp</p>
-              <code className="text-[#1B4332] font-mono text-sm">{selectedFile.fileName}</code>
+            <div className="bg-[#F0F9F1] rounded-2xl p-4 mb-8">
+              <p className="text-[10px] text-[#409167] font-bold uppercase mb-1">Tệp tin liên kết</p>
+              <code className="text-sm">{selectedFile.fileName}</code>
             </div>
+
+            <p className="text-sm text-[#52B788] mb-8 italic">
+              * Lưu ý: Hệ thống đang giả lập. Để xem nội dung thực tế, hãy đảm bảo tệp HTML tương ứng đã được tạo.
+            </p>
 
             <button 
               onClick={() => setSelectedFile(null)}
-              className="w-full py-4 bg-[#FF758F] text-white font-bold rounded-2xl shadow-lg shadow-[#FF758F]/30 hover:scale-[1.02] transition-transform brand-font"
+              className="w-full py-4 bg-[#FF758F] text-white font-bold rounded-2xl shadow-lg brand-font"
             >
-              Bắt đầu học ngay
+              Đã hiểu
             </button>
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes drift {
-          from { transform: translateX(-10vw); }
-          to { transform: translateX(110vw); }
-        }
-        @keyframes drift-reverse {
-          from { transform: translateX(110vw); }
-          to { transform: translateX(-10vw); }
-        }
-      `}</style>
     </div>
   );
 };
