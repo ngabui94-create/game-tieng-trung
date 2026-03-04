@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thám Tử Hồ Sơ - Học Tiếng Trung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Quicksand', sans-serif; }
+        .choice-btn { transition: all 0.2s; }
+        .choice-btn:hover { transform: scale(1.02); }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border-4 border-blue-200">
+        <!-- Header -->
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold uppercase tracking-widest">Thám Tử Hồ Sơ 🔍</h1>
+            <p class="text-blue-100 text-sm">Tìm ra đại từ và quốc tịch đúng</p>
+        </div>
+
+        <!-- Game Body -->
+        <div class="p-8">
+            <div class="flex justify-between mb-6 text-sm font-bold text-blue-600">
+                <span>Câu: <span id="q-num">1</span>/5</span>
+                <span>Điểm: <span id="score">0</span></span>
+            </div>
+
+            <div id="game-area">
+                <div class="bg-gray-50 rounded-2xl p-6 mb-8 border-2 border-dashed border-gray-200 text-center">
+                    <p class="text-lg font-semibold text-gray-700" id="question-text">Đang tải câu hỏi...</p>
+                </div>
+
+                <div class="space-y-3" id="options">
+                    <!-- Options go here -->
+                </div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="result-area" class="hidden text-center space-y-6">
+                <div class="text-6xl">🏆</div>
+                <h2 class="text-2xl font-bold text-gray-800">Chúc mừng thám tử!</h2>
+                <p class="text-gray-600">Bạn đã hoàn thành hồ sơ với <span id="final-score" class="text-blue-600 font-bold">0</span> điểm.</p>
+                <button onclick="location.reload()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg">CHƠI LẠI</button>
+            </div>
+        </div>
+
+        <div class="p-4 bg-gray-50 border-t text-center">
+            <a href="index.html" class="text-blue-500 text-sm hover:underline">← Quay lại trang chủ</a>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Để chỉ 'Cô ấy' (nữ giới), ta dùng chữ Hán nào?", a: "她 (tā)", o: ["他 (tā)", "她 (tā)", "它 (tā)"] },
+            { q: "Dịch sang tiếng Trung: 'Anh ấy là người Việt Nam'", a: "他是越南人", o: ["他是越南人", "她是越南人", "我是越南人"] },
+            { q: "Hỏi quốc tịch: 'Bạn là người nước nào?'", a: "你是哪国人？", o: ["你是日本人吗？", "你是哪国人？", "他是哪国人？"] },
+            { q: "Chữ '人' (rén) có nghĩa là gì?", a: "Người", o: ["Nhà", "Nước", "Người"] },
+            { q: "Chọn câu đúng: 'Cô ấy không phải là người Trung Quốc'", a: "她 patch不是中国人", o: ["她不是中国人", "他不中国人", "她不是中国人"] }
+        ];
+
+        // Sửa lỗi chính tả trong dữ liệu mẫu
+        questions[4].a = "她不是中国人";
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('q-num').innerText = currentQ + 1;
+            document.getElementById('question-text').innerText = q.q;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.o.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "choice-btn w-full p-4 text-left border-2 border-gray-100 rounded-xl font-medium hover:border-blue-500 hover:bg-blue-50 transition-all";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(choice) {
+            if(choice === questions[currentQ].a) {
+                score += 20;
+                document.getElementById('score').innerText = score;
+            }
+
+            currentQ++;
+            if(currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('game-area').classList.add('hidden');
+            document.getElementById('result-area').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
