@@ -1,195 +1,261 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cùng Nga Học HSK</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Noto+Sans+SC:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --ghibli-green: #a7c957;
-            --ghibli-dark: #386641;
-            --ghibli-cream: #fefae0;
-            --ghibli-brown: #606c38;
-            --ghibli-sky: #e0f2fe;
-            --ghibli-leaf: #6a994e;
-        }
-        body {
-            font-family: 'Comfortaa', cursive;
-            background: linear-gradient(180deg, var(--ghibli-sky) 0%, var(--ghibli-cream) 100%);
-            min-height: 100vh;
-            color: var(--ghibli-dark);
-            overflow-x: hidden;
-            position: relative;
-            margin: 0;
+import React, { useState } from 'react';
+import { 
+  BookOpen, 
+  Leaf, 
+  Search, 
+  X, 
+  ChevronRight,
+  Cloud,
+  Flower,
+  Sparkles,
+  TreeDeciduous,
+  Bird,
+  Heart
+} from 'lucide-react';
+
+const App = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [search, setSearch] = useState('');
+
+  const lessons = [
+    {
+      id: 'hsk1-1-2',
+      title: 'Hành trình HSK 1: Bài 1 & 2',
+      desc: 'Những bước chân đầu tiên trên con đường chinh phục ngôn ngữ mới.',
+      type: 'Cơ bản',
+      icon: <BookOpen className="text-[#FF758F]" size={28} />,
+      color: 'border-[#FFD6E0]',
+      bg: 'bg-[#FFF5F7]',
+      fileName: 'HSK1-LESSON1-2.html'
+    },
+    {
+      id: 'hsk1-3',
+      title: 'Lời chào từ Trái tim: Bài 3',
+      desc: 'Học cách trao đi lời chào và nhận lại những nụ cười ấm áp.',
+      type: 'Giao tiếp',
+      icon: <Heart className="text-[#52B788]" size={28} />,
+      color: 'border-[#D8F3DC]',
+      bg: 'bg-[#F0FFF4]',
+      fileName: 'HSK1-LESSON3.html'
+    },
+    {
+      id: 'bo-thu-1',
+      title: 'Gốc rễ Ngôn từ: Bộ Thủ 1',
+      desc: 'Khám phá bí mật ẩn giấu trong từng nét vẽ chữ Hán.',
+      type: 'Bộ Thủ',
+      icon: <TreeDeciduous className="text-[#FF758F]" size={28} />,
+      color: 'border-[#FFD6E0]',
+      bg: 'bg-[#FFF5F7]',
+      fileName: 'BO THU 1.html'
+    },
+    {
+      id: 'bo-thu-2',
+      title: 'Hương vị Thiên nhiên: Bộ Thủ 2',
+      desc: 'Khi chữ viết hòa quyện cùng hình ảnh cỏ cây hoa lá.',
+      type: 'Bộ Thủ',
+      icon: <Bird className="text-[#52B788]" size={28} />,
+      color: 'border-[#D8F3DC]',
+      bg: 'bg-[#F0FFF4]',
+      fileName: 'BO THU 2.html'
+    }
+  ];
+
+  const filtered = lessons.filter(l => 
+    l.title.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F0F9F1] text-[#2D6A4F] selection:bg-[#FFC1CC] relative overflow-hidden">
+      {/* Import Soft Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Pangolin&family=Patrick+Hand&family=Mali:wght@400;700&display=swap');
+        
+        /* Font chính cho toàn bộ trang - Tròn trịa, dễ thương */
+        body { 
+          font-family: 'Comfortaa', cursive; 
         }
 
-        /* Hiệu ứng mây trôi */
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 100px;
-            opacity: 0.6;
-            filter: blur(5px);
-            z-index: 1;
-            animation: float-cloud linear infinite;
-        }
-        .cloud::after {
-            content: '';
-            position: absolute;
-            background: white;
-            width: 50%;
-            height: 150%;
-            top: -50%;
-            left: 25%;
-            border-radius: 50%;
-        }
-        @keyframes float-cloud {
-            from { transform: translateX(-300px); }
-            to { transform: translateX(110vw); }
+        /* Font tiêu đề - Phong cách viết tay Ghibli */
+        .ghibli-font { 
+          font-family: 'Pangolin', cursive; 
         }
 
-        /* Hiệu ứng lá rơi Ghibli */
-        .leaf {
-            position: absolute;
-            top: -20px;
-            z-index: 5;
-            pointer-events: none;
-            animation: fall linear infinite;
+        /* Font cho thương hiệu - Mềm mại nhất */
+        .brand-font { 
+          font-family: 'Mali', cursive; 
         }
+
         @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(100vh) rotate(720deg) translateX(50px); opacity: 0; }
+          0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.8; }
+          90% { opacity: 0.8; }
+          100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .petal {
+          position: absolute;
+          background: #FFC1CC;
+          border-radius: 150% 0 150% 0;
+          opacity: 0.7;
+          pointer-events: none;
+          animation: fall linear infinite;
         }
 
-        .ghibli-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(8px);
-            border: 3px solid transparent;
-        }
-        .ghibli-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            border-color: var(--ghibli-green);
-            background-color: white;
-            box-shadow: 0 20px 25px -5px rgba(56, 102, 65, 0.2);
+        .floating {
+          animation: floating 6s ease-in-out infinite;
         }
 
-        .avatar-img {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 6px solid white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            background-color: #fff;
+        @keyframes floating {
+          0%, 100% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(2deg); }
         }
+      `}</style>
 
-        .slogan-box {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 10px 30px;
-            border-radius: 40px;
-            border: 1px solid rgba(167, 201, 87, 0.4);
-            display: inline-block;
-            margin-bottom: 2rem;
-            animation: bounce-soft 3s ease-in-out infinite;
-        }
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {[...Array(15)].map((_, i) => (
+          <div 
+            key={i}
+            className="petal"
+            style={{
+              width: Math.random() * 15 + 10 + 'px',
+              height: Math.random() * 15 + 10 + 'px',
+              left: Math.random() * 100 + '%',
+              animationDuration: Math.random() * 10 + 10 + 's',
+              animationDelay: Math.random() * 5 + 's',
+            }}
+          />
+        ))}
+        <Cloud className="absolute top-20 -left-20 text-white opacity-50 animate-[drift_80s_linear_infinite]" size={150} />
+        <Cloud className="absolute top-1/2 -right-20 text-white opacity-30 animate-[drift-reverse_100s_linear_infinite]" size={200} />
+      </div>
 
-        @keyframes bounce-soft {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-    </style>
-</head>
-<body class="p-4 md:p-8">
-    <!-- Tạo mây ngẫu nhiên -->
-    <div class="cloud" style="top: 10%; width: 200px; height: 60px; animation-duration: 50s; animation-delay: -5s;"></div>
-    <div class="cloud" style="top: 35%; width: 150px; height: 50px; animation-duration: 70s; animation-delay: -20s;"></div>
-    <div class="cloud" style="top: 65%; width: 250px; height: 80px; animation-duration: 60s; animation-delay: -40s;"></div>
+      {/* Navigation / Header */}
+      <nav className="relative z-10 p-6 flex justify-between items-center">
+        <div className="flex items-center gap-2 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50">
+          <Leaf className="text-[#FF758F]" size={18} />
+          <span className="brand-font font-bold text-[#FF4D6D] text-lg">Nga Học HSK</span>
+        </div>
+      </nav>
 
-    <div class="max-w-4xl mx-auto text-center relative z-10 pt-10">
-        <!-- Ảnh Đại Diện -->
-        <div class="mb-6 inline-block relative">
-            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Nga&backgroundColor=b6e3f4" alt="Nga" class="avatar-img">
-            <div class="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-md">✨</div>
+      <header className="relative z-10 pt-10 pb-16 px-6 text-center">
+        <div className="floating inline-block">
+          <div className="bg-[#FF758F] text-white px-6 py-2 rounded-full text-sm ghibli-font mb-6 shadow-lg shadow-[#FF758F]/20">
+            Chào mừng bạn đến với khu vườn nhỏ 🌿
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-[#1B4332] mb-6 brand-font leading-tight">
+            Nga Học HSK <br/> 
+            <span className="text-[#FF758F] text-3xl md:text-5xl">Góc nhỏ Tiếng Trung</span>
+          </h1>
         </div>
 
-        <h1 class="text-3xl md:text-5xl font-black mb-4 text-[#386641]">
-            Cùng <span class="text-[#bc6c25]">"Nga Học HSK"</span> học Tiếng Trung
-        </h1>
-
-        <div class="slogan-box">
-            <p class="text-lg md:text-xl text-[#606c38] font-bold">
-                🍃 Khu vườn kiến thức của chúng mình 🍃
-            </p>
+        <div className="max-w-md mx-auto relative mt-8">
+          <input 
+            type="text"
+            placeholder="Tìm một bài học xinh xắn..."
+            className="w-full px-8 py-4 rounded-full bg-white/90 border-2 border-[#B7E4C7] focus:border-[#FF758F] outline-none transition-all shadow-inner text-[#2D6A4F] ghibli-font"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-[#FFB7C5]" size={20} />
         </div>
+      </header>
 
-        <!-- Danh sách tất cả các file đã tải lên -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <main className="max-w-6xl mx-auto px-6 pb-24 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {filtered.map((item) => (
+            <div 
+              key={item.id}
+              className={`${item.bg} rounded-[2rem] p-8 border border-white shadow-xl shadow-[#2D6A4F]/5 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative`}
+            >
+              <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-30 transition-opacity">
+                <Flower size={60} />
+              </div>
+              
+              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-[#F0F9F1]">
+                {item.icon}
+              </div>
+              
+              <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white text-[#52B788] ghibli-font border border-[#D8F3DC]">
+                {item.type}
+              </span>
+              
+              <h3 className="text-2xl font-bold mt-4 mb-3 text-[#1B4332] brand-font group-hover:text-[#FF758F] transition-colors">
+                {item.title}
+              </h3>
+              
+              <p className="text-[#52B788] text-sm mb-8 leading-relaxed ghibli-font">
+                {item.desc}
+              </p>
+              
+              <button 
+                onClick={() => setSelectedFile(item)}
+                className="w-full py-3.5 bg-white hover:bg-[#FF758F] hover:text-white text-[#FF758F] font-bold rounded-2xl border-2 border-[#FFD6E0] transition-all flex items-center justify-center gap-2 ghibli-font group/btn"
+              >
+                Ghé thăm bài học
+                <ChevronRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      <footer className="relative z-10 py-12 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="p-3 bg-white/50 rounded-full">
+            <Sparkles className="text-[#FFB7C5]" size={24} />
+          </div>
+          <p className="brand-font text-xl text-[#FF4D6D] font-bold">Nga Học HSK</p>
+          <p className="ghibli-font text-sm text-[#409167]">Handcrafted with love for Chinese learners</p>
+        </div>
+      </footer>
+
+      {/* Modal */}
+      {selectedFile && (
+        <div className="fixed inset-0 bg-[#081C15]/40 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="bg-[#FDFFFC] w-full max-w-sm rounded-[3rem] shadow-2xl overflow-hidden border-8 border-white flex flex-col p-8 animate-in zoom-in duration-300">
+            <div className="flex justify-between items-start mb-6">
+               <div className="bg-[#FFF5F7] p-3 rounded-2xl">
+                <BookOpen className="text-[#FF758F]" size={30} />
+               </div>
+               <button 
+                onClick={() => setSelectedFile(null)} 
+                className="w-10 h-10 flex items-center justify-center bg-[#F0F9F1] hover:bg-[#FFD6E0] rounded-full transition-all text-[#2D6A4F]"
+              >
+                <X size={20} />
+              </button>
+            </div>
             
-            <!-- File 1: Bài tập HSK 1 -->
-            <a href="HSK1-LESSON1-2.html" class="ghibli-card p-6 rounded-[2rem] shadow-sm flex items-center gap-4 group">
-                <div class="text-4xl bg-white p-4 rounded-full shadow-inner group-hover:rotate-12 transition-transform">📚</div>
-                <div class="text-left">
-                    <h2 class="text-lg font-bold text-[#386641]">Luyện Tập HSK 1</h2>
-                    <p class="text-xs text-gray-500 font-medium italic">Bài 1 & 2: Chào hỏi & Làm quen</p>
-                </div>
-            </a>
+            <h3 className="text-2xl font-bold text-[#1B4332] mb-2 brand-font">Mở trang vở...</h3>
+            <p className="text-[#52B788] mb-6 ghibli-font">{selectedFile.title}</p>
+            
+            <div className="bg-[#F0F9F1] rounded-2xl p-4 mb-8 border border-[#D8F3DC]">
+              <p className="text-[10px] text-[#409167] font-bold uppercase tracking-widest mb-1 ghibli-font">Đường dẫn tệp</p>
+              <code className="text-[#1B4332] font-mono text-sm">{selectedFile.fileName}</code>
+            </div>
 
-            <!-- File 2: Bộ Thủ -->
-            <a href="BO THU 1.html" class="ghibli-card p-6 rounded-[2rem] shadow-sm flex items-center gap-4 group">
-                <div class="text-4xl bg-white p-4 rounded-full shadow-inner group-hover:rotate-12 transition-transform">🌱</div>
-                <div class="text-left">
-                    <h2 class="text-lg font-bold text-[#386641]">214 Bộ Thủ Hán Tự</h2>
-                    <p class="text-xs text-gray-500 font-medium italic">Khám phá cội nguồn chữ Hán</p>
-                </div>
-            </a>
-
-            <!-- File 3: Game Hội Thoại AI -->
-            <a href="chinese_learning_game.html" class="ghibli-card p-6 rounded-[2rem] shadow-sm flex items-center gap-4 group">
-                <div class="text-4xl bg-white p-4 rounded-full shadow-inner group-hover:rotate-12 transition-transform">🤖</div>
-                <div class="text-left">
-                    <h2 class="text-lg font-bold text-[#386641]">Hội Thoại Thông Minh</h2>
-                    <p class="text-xs text-gray-500 font-medium italic">Luyện giao tiếp cùng AI</p>
-                </div>
-            </a>
-
-            <!-- File 4: Game Lật Thẻ Ghi Nhớ -->
-            <a href="chinese_memory_game.html" class="ghibli-card p-6 rounded-[2rem] shadow-sm flex items-center gap-4 group">
-                <div class="text-4xl bg-white p-4 rounded-full shadow-inner group-hover:rotate-12 transition-transform">🃏</div>
-                <div class="text-left">
-                    <h2 class="text-lg font-bold text-[#386641]">Thử Thách Trí Nhớ</h2>
-                    <p class="text-xs text-gray-500 font-medium italic">Game lật thẻ từ vựng thú vị</p>
-                </div>
-            </a>
-
+            <button 
+              onClick={() => setSelectedFile(null)}
+              className="w-full py-4 bg-[#FF758F] text-white font-bold rounded-2xl shadow-lg shadow-[#FF758F]/30 hover:scale-[1.02] transition-transform brand-font"
+            >
+              Bắt đầu học ngay
+            </button>
+          </div>
         </div>
+      )}
 
-        <footer class="mt-16 text-[#386641] opacity-60 text-sm">
-            <p>Made with Love for Chinese Learners 🌿</p>
-        </footer>
-    </div>
-
-    <script>
-        // Tạo lá rơi ngẫu nhiên
-        function createLeaf() {
-            const leaf = document.createElement('div');
-            leaf.className = 'leaf';
-            leaf.innerHTML = '🍃';
-            leaf.style.left = Math.random() * 100 + 'vw';
-            leaf.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            leaf.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            leaf.style.opacity = Math.random();
-            document.body.appendChild(leaf);
-
-            setTimeout(() => {
-                leaf.remove();
-            }, 10000);
+      <style>{`
+        @keyframes drift {
+          from { transform: translateX(-10vw); }
+          to { transform: translateX(110vw); }
         }
+        @keyframes drift-reverse {
+          from { transform: translateX(110vw); }
+          to { transform: translateX(-10vw); }
+        }
+      `}</style>
+    </div>
+  );
+};
 
-        setInterval(createLeaf, 600);
-    </script>
-</body>
-</html>
+export default App;
