@@ -3,96 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hành Trình Trung Văn - Cô Nga Bùi</title>
+    <title>Cùng Nga Học HSK</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Noto+Sans+SC:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Quicksand', sans-serif; background-color: #fdf2f2; }
-        .chinese-font { font-family: 'ZCOOL+XiaoWei', serif; }
-        .game-card { transition: all 0.3s ease; border: 2px solid transparent; }
-        .game-card:hover { transform: translateY(-5px); border-color: #dc2626; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .hero-gradient { background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%); }
+        :root {
+            --ghibli-green: #a7c957;
+            --ghibli-dark: #386641;
+            --ghibli-cream: #f2e8cf;
+            --ghibli-sky: #e0f2fe;
+            --ghibli-cloud: #ffffff;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: linear-gradient(180deg, var(--ghibli-sky) 0%, var(--ghibli-cream) 100%);
+            min-height: 100vh;
+            color: var(--ghibli-dark);
+        }
+
+        .ghibli-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 3px solid white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 2rem;
+        }
+
+        .ghibli-card:hover {
+            transform: translateY(-8px) rotate(-1deg);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 40px rgba(56, 102, 65, 0.1);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.6;
+            animation: moveCloud var(--duration) linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes moveCloud {
+            from { left: -200px; }
+            to { left: 100vw; }
+        }
+
+        .header-title {
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .btn-study {
+            background-color: var(--ghibli-green);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .btn-study:hover {
+            background-color: var(--ghibli-dark);
+            transform: scale(1.05);
+        }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="relative overflow-x-hidden">
 
-    <!-- Header Section -->
-    <header class="hero-gradient text-white pt-12 pb-20 px-6 text-center shadow-lg">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight">HÀNH TRÌNH TRUNG VĂN ✨</h1>
-            <p class="text-xl md:text-2xl opacity-90 italic">"Chơi mà học - Chinh phục tiếng Trung cùng cô Nga Bùi"</p>
-        </div>
-    </header>
+    <!-- Clouds Background -->
+    <div class="cloud w-32 h-12 top-10" style="--duration: 40s"></div>
+    <div class="cloud w-48 h-16 top-40" style="--duration: 60s; opacity: 0.4"></div>
+    <div class="cloud w-40 h-10 top-20 right-0" style="--duration: 50s"></div>
 
-    <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-6 -mt-10">
-        
-        <!-- Các hoạt động chính -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            
-            <!-- Hoạt động 1 -->
-            <div class="game-card bg-white rounded-2xl p-6 text-center shadow-sm">
-                <div class="text-5xl mb-4">🔍</div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">Thám Tử Hồ Sơ</h3>
-                <p class="text-sm text-gray-500 mb-6">Giải mã thông tin cá nhân bằng tiếng Trung.</p>
-                <a href="chinese_profile_detective.html" class="block w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700">VÀO CHƠI</a>
+    <div class="max-w-5xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <div class="inline-block p-4 bg-white/50 rounded-full mb-6 shadow-sm border-2 border-white">
+                <span class="text-5xl">🌿</span>
+            </div>
+            <h1 class="header-title text-3xl md:text-5xl font-black text-[#386641] mb-4">
+                Cùng Nga Học HSK chinh phục tiếng Trung! ✨
+            </h1>
+            <p class="text-lg text-[#6a994e] font-bold italic italic uppercase tracking-widest">Khu vườn kiến thức của chúng mình</p>
+        </header>
+
+        <!-- Section: Kho Tài Liệu -->
+        <section class="space-y-8">
+            <div class="flex items-center justify-between mb-8 border-b-2 border-[#a7c957] pb-4">
+                <h2 class="text-2xl font-black flex items-center gap-2">
+                    <span class="text-3xl">🎒</span> TÀI LIỆU VÀ BÀI TẬP
+                </h2>
             </div>
 
-            <!-- Hoạt động 2 -->
-            <div class="game-card bg-white rounded-2xl p-6 text-center shadow-sm">
-                <div class="text-5xl mb-4">🧩</div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">Bậc Thầy Ngữ Pháp</h3>
-                <p class="text-sm text-gray-500 mb-6">Sắp xếp câu và cấu trúc ngữ pháp HSK.</p>
-                <a href="chinese_sentence_master.html" class="block w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700">VÀO CHƠI</a>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- HSK 1 Lesson 1-2 -->
+                <a href="HSK1-LESSON1-2.html" class="ghibli-card p-8 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">📖</div>
+                    <h3 class="text-xl font-bold mb-2">HSK 1: Bài 1 & 2</h3>
+                    <p class="text-sm text-gray-500 mb-6">Những bước chân đầu tiên trên hành trình học tiếng Trung.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Học Ngay</div>
+                </a>
+
+                <!-- HSK 1 Lesson 3 -->
+                <a href="HSK1-LESSON3.html" class="ghibli-card p-8 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">📔</div>
+                    <h3 class="text-xl font-bold mb-2">HSK 1: Bài 3</h3>
+                    <p class="text-sm text-gray-500 mb-6">Củng cố kiến thức và hội thoại cơ bản.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Tiếp Tục</div>
+                </a>
+
+                <!-- Bộ Thủ 1 -->
+                <a href="BO THU 1.html" class="ghibli-card p-8 flex flex-col items-center text-center border-emerald-300">
+                    <div class="text-5xl mb-4">🌱</div>
+                    <h3 class="text-xl font-bold mb-2">Bộ Thủ - Phần 1</h3>
+                    <p class="text-sm text-gray-500 mb-6">Xây dựng nền móng qua các bộ thủ quan trọng.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Vào Học</div>
+                </a>
+
+                <!-- Bộ Thủ 2 -->
+                <a href="BO THU 2.html" class="ghibli-card p-8 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">🍀</div>
+                    <h3 class="text-xl font-bold mb-2">Bộ Thủ - Phần 2</h3>
+                    <p class="text-sm text-gray-500 mb-6">Mở rộng vốn từ qua các thành phần chữ Hán.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Vào Học</div>
+                </a>
+
+                <!-- Bộ Thủ 3 -->
+                <a href="BO THU 3.html" class="ghibli-card p-8 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">🎋</div>
+                    <h3 class="text-xl font-bold mb-2">Bộ Thủ - Phần 3</h3>
+                    <p class="text-sm text-gray-500 mb-6">Luyện tập nhận diện và ghi nhớ sâu.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Vào Học</div>
+                </a>
+
+                <!-- Thám Tử Hồ Sơ (Giữ lại nếu bạn muốn sửa sau, hoặc xóa nếu không cần) -->
+                <a href="chinese_profile_detective.html" class="ghibli-card p-8 flex flex-col items-center text-center">
+                    <div class="text-5xl mb-4">🔎</div>
+                    <h3 class="text-xl font-bold mb-2">Thám Tử Hồ Sơ</h3>
+                    <p class="text-sm text-gray-500 mb-6">Giải mã thông tin cá nhân đối tượng.</p>
+                    <div class="btn-study px-6 py-2 rounded-full font-bold text-sm mt-auto">Vào Chơi</div>
+                </a>
+
             </div>
+        </section>
 
-            <!-- Hoạt động 3 -->
-            <div class="game-card bg-white rounded-2xl p-6 text-center shadow-sm">
-                <div class="text-5xl mb-4">🤖</div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">Tương Tác AI</h3>
-                <p class="text-sm text-gray-500 mb-6">Luyện giao tiếp và hỏi đáp cùng trợ lý AI.</p>
-                <a href="chinese_learning_game.html" class="block w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700">VÀO CHƠI</a>
-            </div>
-
-        </div>
-
-        <!-- Section: Bài Học & Đề Thi (Dựa trên file thực tế của bạn) -->
-        <div class="bg-white rounded-3xl p-8 shadow-sm">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <span class="bg-red-600 text-white px-3 py-1 rounded-lg mr-3 text-sm">HOT</span> 
-                Kho Tài Liệu & Bài Tập
-            </h2>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Danh sách dựa trên ảnh GitHub của bạn -->
-                <a href="HSK1-LESSON1-2.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📘</span> HSK 1: Bài 1 & 2
-                </a>
-                <a href="HSK1-LESSON3.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📘</span> HSK 1: Bài 3
-                </a>
-                <a href="BO THU 2.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📝</span> Bộ Thủ 2
-                </a>
-                <a href="BO THU 3.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📝</span> Bộ Thủ 3
-                </a>
-                <a href="BO THU 4.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📝</span> Bộ Thủ 4
-                </a>
-                <a href="BO THU 5.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📝</span> Bộ Thủ 5
-                </a>
-                <a href="BO THU 6.html" class="p-4 border rounded-xl hover:bg-red-50 text-gray-700 font-medium transition-colors flex items-center">
-                    <span class="mr-2">📝</span> Bộ Thủ 6
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="mt-16 text-center text-gray-400 text-sm">
-        <p>© 2024 Hành Trình Trung Văn. Made with ❤️ for students.</p>
-    </footer>
+        <!-- Footer -->
+        <footer class="mt-24 text-center">
+            <div class="h-px bg-white/50 w-full mb-8"></div>
+            <p class="text-[#6a994e] text-sm">© 2024 Cùng Nga Học HSK • Chúc bạn học tập vui vẻ nhé!</p>
+            <p class="text-xs text-gray-400 mt-2 italic">Ghibli Vibes Design 🍃</p>
+        </footer>
+    </div>
 
 </body>
 </html>
