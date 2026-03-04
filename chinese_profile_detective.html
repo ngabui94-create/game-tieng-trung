@@ -3,108 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thám Tử Hồ Sơ - Học Tiếng Trung</title>
+    <title>Thám Tử Hồ Sơ Tiếng Trung</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Quicksand', sans-serif; }
-        .choice-btn { transition: all 0.2s; }
-        .choice-btn:hover { transform: scale(1.02); }
+        body { font-family: 'Quicksand', sans-serif; background-color: #f0f4f8; }
+        .chinese-font { font-family: 'ZCOOL+XiaoWei', serif; }
+        .profile-card { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="bg-blue-50 min-h-screen flex items-center justify-center p-4">
-
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border-4 border-blue-200">
-        <!-- Header -->
-        <div class="bg-blue-600 p-6 text-white text-center">
-            <h1 class="text-2xl font-bold uppercase tracking-widest">Thám Tử Hồ Sơ 🔍</h1>
-            <p class="text-blue-100 text-sm">Tìm ra đại từ và quốc tịch đúng</p>
-        </div>
-
-        <!-- Game Body -->
-        <div class="p-8">
-            <div class="flex justify-between mb-6 text-sm font-bold text-blue-600">
-                <span>Câu: <span id="q-num">1</span>/5</span>
-                <span>Điểm: <span id="score">0</span></span>
-            </div>
-
-            <div id="game-area">
-                <div class="bg-gray-50 rounded-2xl p-6 mb-8 border-2 border-dashed border-gray-200 text-center">
-                    <p class="text-lg font-semibold text-gray-700" id="question-text">Đang tải câu hỏi...</p>
+<body class="p-4 md:p-8">
+    <div class="max-w-3xl mx-auto">
+        <!-- Tiêu đề -->
+        <div class="bg-indigo-700 text-white p-6 rounded-t-3xl shadow-lg mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold">🔍 THÁM TỬ HỒ SƠ</h1>
+                    <p class="opacity-80">Giải mã thông tin đối tượng</p>
                 </div>
-
-                <div class="space-y-3" id="options">
-                    <!-- Options go here -->
-                </div>
-            </div>
-
-            <!-- Result Area -->
-            <div id="result-area" class="hidden text-center space-y-6">
-                <div class="text-6xl">🏆</div>
-                <h2 class="text-2xl font-bold text-gray-800">Chúc mừng thám tử!</h2>
-                <p class="text-gray-600">Bạn đã hoàn thành hồ sơ với <span id="final-score" class="text-blue-600 font-bold">0</span> điểm.</p>
-                <button onclick="location.reload()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg">CHƠI LẠI</button>
+                <a href="index.html" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-bold">← TRANG CHỦ</a>
             </div>
         </div>
 
-        <div class="p-4 bg-gray-50 border-t text-center">
-            <a href="index.html" class="text-blue-500 text-sm hover:underline">← Quay lại trang chủ</a>
+        <!-- Nhiệm vụ -->
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded-r-xl">
+            <p class="text-yellow-800 font-medium italic">"Chào thám tử! Hãy nghiên cứu hồ sơ bên dưới và trả lời câu hỏi để xác nhận danh tính đối tượng."</p>
+        </div>
+
+        <!-- Hồ sơ mẫu -->
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-6 profile-card border-2 border-transparent hover:border-indigo-500">
+            <div class="flex items-center mb-4">
+                <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center text-3xl">👤</div>
+                <div class="ml-4">
+                    <h2 class="text-xl font-bold text-gray-800">Hồ sơ #001</h2>
+                    <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold uppercase">Mật</span>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-gray-500">Họ tên (姓名):</span>
+                    <span class="chinese-font text-xl font-bold text-indigo-700">王小明 (Wáng Xiǎomíng)</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-gray-500">Quốc tịch (国籍):</span>
+                    <span class="font-bold text-red-600">中国人 (Zhōngguó rén)</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-gray-500">Nghề nghiệp (职业):</span>
+                    <span class="font-medium">学生 (Xuésheng) - Học sinh</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Câu hỏi -->
+        <div id="game-area" class="bg-white rounded-2xl shadow-md p-6 border-t-4 border-indigo-500">
+            <h3 class="text-lg font-bold mb-4 text-gray-700">Câu hỏi xác minh:</h3>
+            <p class="mb-4 text-gray-600 font-semibold text-lg">Dựa vào hồ sơ, người này mang quốc tịch nào?</p>
+            
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="checkAnswer(this, true)" class="text-left p-4 rounded-xl border-2 border-gray-100 hover:border-indigo-300 hover:bg-indigo-50 transition font-bold text-gray-700">A. 中国人 (Người Trung Quốc)</button>
+                <button onclick="checkAnswer(this, false)" class="text-left p-4 rounded-xl border-2 border-gray-100 hover:border-indigo-300 hover:bg-indigo-50 transition font-bold text-gray-700">B. 越南人 (Người Việt Nam)</button>
+                <button onclick="checkAnswer(this, false)" class="text-left p-4 rounded-xl border-2 border-gray-100 hover:border-indigo-300 hover:bg-indigo-50 transition font-bold text-gray-700">C. 美国人 (Người Mỹ)</button>
+            </div>
+            
+            <div id="feedback" class="mt-6 hidden p-4 rounded-xl text-center font-bold"></div>
         </div>
     </div>
 
     <script>
-        const questions = [
-            { q: "Để chỉ 'Cô ấy' (nữ giới), ta dùng chữ Hán nào?", a: "她 (tā)", o: ["他 (tā)", "她 (tā)", "它 (tā)"] },
-            { q: "Dịch sang tiếng Trung: 'Anh ấy là người Việt Nam'", a: "他是越南人", o: ["他是越南人", "她是越南人", "我是越南人"] },
-            { q: "Hỏi quốc tịch: 'Bạn là người nước nào?'", a: "你是哪国人？", o: ["你是日本人吗？", "你是哪国人？", "他是哪国人？"] },
-            { q: "Chữ '人' (rén) có nghĩa là gì?", a: "Người", o: ["Nhà", "Nước", "Người"] },
-            { q: "Chọn câu đúng: 'Cô ấy không phải là người Trung Quốc'", a: "她 patch不是中国人", o: ["她不是中国人", "他不中国人", "她不是中国人"] }
-        ];
-
-        // Sửa lỗi chính tả trong dữ liệu mẫu
-        questions[4].a = "她不是中国人";
-
-        let currentQ = 0;
-        let score = 0;
-
-        function loadQuestion() {
-            const q = questions[currentQ];
-            document.getElementById('q-num').innerText = currentQ + 1;
-            document.getElementById('question-text').innerText = q.q;
+        function checkAnswer(btn, isCorrect) {
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('button');
             
-            const optionsDiv = document.getElementById('options');
-            optionsDiv.innerHTML = '';
+            // Khóa các nút
+            buttons.forEach(b => b.disabled = true);
+            feedback.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
             
-            q.o.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "choice-btn w-full p-4 text-left border-2 border-gray-100 rounded-xl font-medium hover:border-blue-500 hover:bg-blue-50 transition-all";
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt);
-                optionsDiv.appendChild(btn);
-            });
-        }
-
-        function checkAnswer(choice) {
-            if(choice === questions[currentQ].a) {
-                score += 20;
-                document.getElementById('score').innerText = score;
-            }
-
-            currentQ++;
-            if(currentQ < questions.length) {
-                loadQuestion();
+            if (isCorrect) {
+                feedback.innerHTML = "🎉 CHÍNH XÁC! Bạn đã xác minh hồ sơ thành công.";
+                feedback.classList.add('bg-green-100', 'text-green-700');
+                btn.classList.add('bg-green-500', 'text-white', 'border-green-500');
             } else {
-                showResult();
+                feedback.innerHTML = "❌ SAI RỒI! Thông tin không khớp với hồ sơ mật.";
+                feedback.classList.add('bg-red-100', 'text-red-700');
+                btn.classList.add('bg-red-500', 'text-white', 'border-red-500');
             }
         }
-
-        function showResult() {
-            document.getElementById('game-area').classList.add('hidden');
-            document.getElementById('result-area').classList.remove('hidden');
-            document.getElementById('final-score').innerText = score;
-        }
-
-        loadQuestion();
     </script>
 </body>
 </html>
